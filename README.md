@@ -13,6 +13,12 @@ users can manage everything inside one AI-powered workspace.
 The application focuses on project planning, documentation, UI inspiration, 
 and task management — not code generation.
 
+## Features
+- **Project brief** — Turn a one-line idea into a structured overview
+- **Task breakdown** — Milestones and backlog items ready to track
+- **Documentation** — PRDs, user stories, and notes in one place
+- **UI inspiration** — Layout and wireframe suggestions without switching tools
+
 ## Status
 🚧 In development — Capstone project for Frontend AI Engineering internship track.
 
