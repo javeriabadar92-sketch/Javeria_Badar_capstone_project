@@ -22,6 +22,14 @@ and task management — not code generation.
 ## Status
 🚧 In development — Capstone project for Frontend AI Engineering internship track.
 
+## Roadmap
+- [ ] **Phase 1 — Foundation** — Project setup, core layout, and navigation
+- [ ] **Phase 2 — Project brief** — Turn a one-line idea into a structured overview
+- [ ] **Phase 3 — Task breakdown** — Milestones and backlog items
+- [ ] **Phase 4 — Documentation** — PRDs, user stories, and notes
+- [ ] **Phase 5 — UI inspiration** — Layout and wireframe suggestions
+- [ ] **Phase 6 — Polish** — Responsive design, accessibility, and deployment
+
 ## Tech Stack
 (to be finalized)
 
