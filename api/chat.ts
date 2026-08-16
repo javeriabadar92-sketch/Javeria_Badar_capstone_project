@@ -1,3 +1,7 @@
+export const config = {
+  runtime: 'edge',
+};
+
 import { streamText } from 'ai';
 import { google } from '@ai-sdk/google';
 
@@ -7,7 +11,7 @@ covering requirements, user stories, suggested features, and a development
 roadmap. Be concise, practical, and ask clarifying questions when the idea 
 is too vague to plan properly.`;
 
-const MODEL_NAME = 'gemini-1.5-flash'; // fast + cost-effective for chat
+const MODEL_NAME = 'gemini-1.5-flash';
 
 export default async function handler(req: Request) {
   const { messages } = await req.json();
@@ -18,5 +22,5 @@ export default async function handler(req: Request) {
     messages,
   });
 
-return result.toUIMessageStreamResponse();
+  return result.toUIMessageStreamResponse();
 }
