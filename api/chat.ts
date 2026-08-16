@@ -28,7 +28,6 @@ export default async function handler(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // @ts-expect-error - process is available in Node.js runtime
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
       return new Response(
