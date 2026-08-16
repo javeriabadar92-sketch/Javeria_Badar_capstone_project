@@ -2,9 +2,8 @@ import { useChat } from '@ai-sdk/react';
 import { useRef, useEffect, useState } from 'react';
 
 export default function Chat() {
-const { messages, sendMessage, status, stop, error } = useChat({
-  api: '/api/chat',
-});  const [input, setInput] = useState('');
+  const { messages, sendMessage, status, stop, error } = useChat();
+  const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
