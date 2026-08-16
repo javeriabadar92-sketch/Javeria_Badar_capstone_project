@@ -34,8 +34,13 @@ export function Tabs({ tabs }: TabsProps) {
   };
 
   return (
-    <div>
-      <div role="tablist" aria-label="Playground tabs" className="flex border-b">
+    <div className="w-full rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+      {/* Tab List */}
+      <div
+        role="tablist"
+        aria-label="Content tabs"
+        className="flex bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200"
+      >
         {tabs.map((tab, index) => (
           <button
             key={tab.id}
@@ -49,15 +54,18 @@ export function Tabs({ tabs }: TabsProps) {
             tabIndex={activeIndex === index ? 0 : -1}
             onClick={() => setActiveIndex(index)}
             onKeyDown={handleKeyDown}
-            className={`px-4 py-2 ${
-              activeIndex === index ? 'border-b-2 border-blue-500 font-bold' : ''
-            }`}
+            className={`font-roboto px-6 py-3 font-medium text-sm transition-all duration-200 ease-out border-b-2 ${
+              activeIndex === index
+                ? 'border-indigo-600 text-indigo-700 bg-white'
+                : 'border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+            } focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-inset`}
           >
             {tab.label}
           </button>
         ))}
       </div>
 
+      {/* Tab Panels */}
       {tabs.map((tab, index) => (
         <div
           key={tab.id}
@@ -66,9 +74,15 @@ export function Tabs({ tabs }: TabsProps) {
           aria-labelledby={`tab-${tab.id}`}
           hidden={activeIndex !== index}
           tabIndex={0}
-          className="p-4"
+          className={`px-6 py-6 transition-all duration-300 ease-out ${
+            activeIndex === index
+              ? 'opacity-100 visible'
+              : 'opacity-0 invisible absolute'
+          }`}
         >
-          {tab.content}
+          <div className="font-openSans text-slate-700 leading-relaxed space-y-3">
+            {tab.content}
+          </div>
         </div>
       ))}
     </div>
