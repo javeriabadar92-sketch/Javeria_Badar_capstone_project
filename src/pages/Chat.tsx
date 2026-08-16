@@ -34,6 +34,7 @@ export default function Chat() {
       content: input,
     };
 
+    console.log('📤 Sending message:', userMessage);
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setAutoScroll(true);
@@ -41,24 +42,31 @@ export default function Chat() {
     setError(null);
 
     try {
+      const requestBody = {
+        messages: [
+          ...messages,
+          userMessage,
+        ].map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        })),
+      };
+
+      console.log('📡 Request body:', requestBody);
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          messages: [
-            ...messages,
-            userMessage,
-          ].map((msg) => ({
-            role: msg.role,
-            content: msg.content,
-          })),
-        }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log('📬 Response status:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('❌ API error:', errorData);
         throw new Error(errorData.error || 'Failed to get response');
       }
 
@@ -78,26 +86,31 @@ export default function Chat() {
           if (done) break;
 
           const text = decoder.decode(value);
+          console.log('📥 Received chunk:', text);
           const lines = text.split('\n');
 
           for (const line of lines) {
             if (line.startsWith('data: ')) {
               const jsonStr = line.slice(6);
-              if (jsonStr === '[DONE]') continue;
+              if (jsonStr === '[DONE]') {
+                console.log('✅ Stream complete');
+                continue;
+              }
 
               try {
                 const json = JSON.parse(jsonStr);
-                if (json.type === 'text-delta' && json.text) {
+                if (json.type === 'text-delta' && json.delta) {
+                  console.log('💬 Text delta:', json.delta);
                   setMessages((prev) =>
                     prev.map((msg) =>
                       msg.id === streamingMessageId
-                        ? { ...msg, content: msg.content + json.text }
+                        ? { ...msg, content: msg.content + json.delta }
                         : msg
                     )
                   );
                 }
               } catch (e) {
-                // Ignore parse errors
+                console.warn('⚠️ Parse error:', e);
               }
             }
           }
@@ -107,6 +120,7 @@ export default function Chat() {
       setStatus('idle');
     } catch (err) {
       setStatus('idle');
+      console.error('❌ Error:', err);
       setError({
         message: err instanceof Error ? err.message : 'Something went wrong',
       });
@@ -123,16 +137,14 @@ export default function Chat() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${
-              message.role === 'user' ? 'justify-end' : 'justify-start'
-            }`}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'
+              }`}
           >
             <div
-              className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                message.role === 'user'
+              className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user'
                   ? 'bg-indigo-600 text-white'
                   : 'bg-slate-700 text-slate-100'
-              }`}
+                }`}
             >
               <span>{message.content}</span>
             </div>
