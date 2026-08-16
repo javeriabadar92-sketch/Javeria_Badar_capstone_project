@@ -1,13 +1,11 @@
+import { useChat } from '@ai-sdk/react';
 import { useRef, useEffect, useState } from 'react';
 
 export default function Chat() {
-  const [messages, setMessages] = useState<{ id: string; role: 'user' | 'assistant'; content: string }[]>([]);
+  const { messages, sendMessage, status, stop, error } = useChat();
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
-  const [status, setStatus] = useState<'idle' | 'submitted' | 'streaming'>('idle');
-  const [error, setError] = useState<{ message: string } | null>(null);
-  let streamingMessageId = '';
 
   const isStreaming = status === 'streaming' || status === 'submitted';
 
@@ -24,107 +22,12 @@ export default function Chat() {
     setAutoScroll(isAtBottom);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
-    const userMessage = {
-      id: Date.now().toString(),
-      role: 'user' as const,
-      content: input,
-    };
-
-    console.log('📤 Sending message:', userMessage);
-    setMessages((prev) => [...prev, userMessage]);
+    sendMessage({ text: input });
     setInput('');
     setAutoScroll(true);
-    setStatus('submitted');
-    setError(null);
-
-    try {
-      const requestBody = {
-        messages: [
-          ...messages,
-          userMessage,
-        ].map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
-      };
-
-      console.log('📡 Request body:', requestBody);
-
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      console.log('📬 Response status:', response.status);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('❌ API error:', errorData);
-        throw new Error(errorData.error || 'Failed to get response');
-      }
-
-      streamingMessageId = (Date.now() + 1).toString();
-      setMessages((prev) => [
-        ...prev,
-        { id: streamingMessageId, role: 'assistant', content: '' },
-      ]);
-
-      setStatus('streaming');
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const text = decoder.decode(value);
-          console.log('📥 Received chunk:', text);
-          const lines = text.split('\n');
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const jsonStr = line.slice(6);
-              if (jsonStr === '[DONE]') {
-                console.log('✅ Stream complete');
-                continue;
-              }
-
-              try {
-                const json = JSON.parse(jsonStr);
-                if (json.type === 'text-delta' && json.delta) {
-                  console.log('💬 Text delta:', json.delta);
-                  setMessages((prev) =>
-                    prev.map((msg) =>
-                      msg.id === streamingMessageId
-                        ? { ...msg, content: msg.content + json.delta }
-                        : msg
-                    )
-                  );
-                }
-              } catch (e) {
-                console.warn('⚠️ Parse error:', e);
-              }
-            }
-          }
-        }
-      }
-
-      setStatus('idle');
-    } catch (err) {
-      setStatus('idle');
-      console.error('❌ Error:', err);
-      setError({
-        message: err instanceof Error ? err.message : 'Something went wrong',
-      });
-    }
   };
 
   return (
@@ -137,16 +40,20 @@ export default function Chat() {
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'
-              }`}
+            className={`flex ${
+              message.role === 'user' ? 'justify-end' : 'justify-start'
+            }`}
           >
             <div
-              className={`max-w-[80%] rounded-lg px-4 py-2 ${message.role === 'user'
+              className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                message.role === 'user'
                   ? 'bg-indigo-600 text-white'
                   : 'bg-slate-700 text-slate-100'
-                }`}
+              }`}
             >
-              <span>{message.content}</span>
+              {message.parts.map((part, i) =>
+                part.type === 'text' ? <span key={i}>{part.text}</span> : null
+              )}
             </div>
           </div>
         ))}
@@ -162,7 +69,7 @@ export default function Chat() {
         {error && (
           <div className="flex justify-center">
             <div className="max-w-[80%] rounded-lg border border-red-500 bg-red-900/40 px-4 py-2 text-sm text-red-100">
-              {error.message || 'Something went wrong while generating the response.'}
+              {error.message}
             </div>
           </div>
         )}
@@ -194,15 +101,15 @@ export default function Chat() {
         {isStreaming ? (
           <button
             type="button"
-            disabled
-            className="bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold cursor-not-allowed opacity-50"
+            onClick={stop}
+            className="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold"
           >
-            Sending...
+            Stop
           </button>
         ) : (
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700"
+            className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold"
           >
             Send
           </button>
