@@ -15,7 +15,7 @@ covering requirements, user stories, suggested features, and a development
 roadmap. Be concise, practical, and ask clarifying questions when the idea 
 is too vague to plan properly.`;
 
-const MODEL_NAME = 'gemini-3.1-flash-live-preview';
+const MODEL_NAME = 'gemini-2.5-flash';
 
 export default async function handler(req: Request) {
   if (req.method !== 'POST') {
