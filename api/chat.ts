@@ -19,8 +19,7 @@ covering requirements, user stories, suggested features, and a development
 roadmap. Be concise, practical, and ask clarifying questions when the idea 
 is too vague to plan properly.`;
 
-const MODEL_NAME = 'gemini-2.5-flash';
-
+const MODEL_NAME = 'gemini-flash-latest';
 export default async function handler(req: Request) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -46,7 +45,7 @@ export default async function handler(req: Request) {
     }
 
     const modelMessages = await convertToModelMessages(messages ?? []);
-    console.log('Model messages:', JSON.stringify(modelMessages));
+      console.log('Model messages:', JSON.stringify(modelMessages));
     
     const result = streamText({
       model: google(MODEL_NAME),
