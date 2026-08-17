@@ -1,30 +1,42 @@
 import express from 'express';
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
+
 app.use(express.json());
 
-const SYSTEM_PROMPT = `You are ProjectPilot AI, an assistant that helps 
-Software Engineering students turn a project idea into a structured plan — 
-covering requirements, user stories, suggested features, and a development 
-roadmap. Be concise, practical, and ask clarifying questions when the idea 
+// Add logging middleware
+app.use((req, res, next) => {
+  console.log(`📨 ${req.method} ${req.path}`);
+  next();
+});
+
+const SYSTEM_PROMPT = `You are ProjectPilot AI, an assistant that helps
+Software Engineering students turn a project idea into a structured plan —
+covering requirements, user stories, suggested features, and a development
+roadmap.
+
+Be concise, practical, and ask clarifying questions when the idea
 is too vague to plan properly.`;
 
-const MODEL_NAME = 'gemini-1.5-flash';
+const MODEL_NAME = 'gemini-2.5-flash';
 
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages } = req.body;
+    console.log('📥 Received chat request with', messages?.length || 0, 'messages');
 
-    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({
-        error: 'Missing GOOGLE_GENERATIVE_AI_API_KEY environment variable.',
-      });
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+      console.error('❌ Missing API key!');
+      return res.status(500).json({ error: 'API key not configured' });
     }
 
     const modelMessages = await convertToModelMessages(messages ?? []);
+    console.log('✅ Converted to model messages');
 
     const result = streamText({
       model: google(MODEL_NAME),
@@ -32,28 +44,53 @@ app.post('/api/chat', async (req, res) => {
       messages: modelMessages,
     });
 
-    // Stream the response
-    const stream = result.toTextStream();
-    
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+    const response = result.toUIMessageStreamResponse();
+    console.log('🚀 Starting stream response');
 
-    for await (const chunk of stream) {
-      res.write(`data: ${JSON.stringify({ type: 'text-delta', text: chunk })}\n\n`);
+    res.status(response.status);
+
+    response.headers.forEach((value, key) => {
+      res.setHeader(key, value);
+    });
+
+    if (!response.body) {
+      throw new Error('No response body returned from AI SDK.');
     }
-    
-    res.write('data: [DONE]\n\n');
+
+    const reader = response.body.getReader();
+    let chunkCount = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        console.log('✅ Stream complete -', chunkCount, 'chunks sent');
+        break;
+      }
+
+      chunkCount++;
+      res.write(Buffer.from(value));
+    }
+
     res.end();
   } catch (error) {
     console.error('Chat request failed:', error);
-    res.status(500).json({
-      error: error instanceof Error ? error.message : 'Something went wrong while generating the response.',
-    });
+
+    if (!res.headersSent) {
+      res.status(500).json({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong while generating the response.',
+      });
+    } else {
+      res.end();
+    }
   }
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
