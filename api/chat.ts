@@ -46,7 +46,8 @@ export default async function handler(req: Request) {
     }
 
     const modelMessages = await convertToModelMessages(messages ?? []);
-
+    console.log('Model messages:', JSON.stringify(modelMessages));
+    
     const result = streamText({
       model: google(MODEL_NAME),
       system: SYSTEM_PROMPT,
