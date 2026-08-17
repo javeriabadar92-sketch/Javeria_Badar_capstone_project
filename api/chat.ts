@@ -1,3 +1,7 @@
+export const config = {
+  runtime: 'edge',
+};
+
 import { streamText, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 
