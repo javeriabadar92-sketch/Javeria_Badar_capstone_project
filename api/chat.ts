@@ -19,6 +19,8 @@ covering requirements, user stories, suggested features, and a development
 roadmap. Be concise, practical, and ask clarifying questions when the idea 
 is too vague to plan properly.`;
 
+const PLAN_SYSTEM_PROMPT = `You are ProjectPilot AI's planning engine. Return ONLY valid JSON with no markdown fences, commentary, or extra keys. Use exactly this shape: {"overview":"string","requirements":{"functional":["string"],"nonFunctional":["string"]},"userStories":["string"],"suggestedFeatures":["string"],"roadmap":[{"phase":"string","description":"string"}],"kanbanTasks":[{"title":"string","status":"todo"}]}. Every kanban status must be exactly "todo", "inProgress", or "done". Make the plan specific, concise, and useful for a Software Engineering student.`;
+
 const MODEL_NAME = 'gemini-flash-latest';
 export default async function handler(req: Request) {
   if (req.method !== 'POST') {
@@ -29,7 +31,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, mode } = await req.json();
 
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
@@ -48,7 +50,7 @@ export default async function handler(req: Request) {
     
     const result = streamText({
       model: google(MODEL_NAME),
-      system: SYSTEM_PROMPT,
+      system: mode === 'plan' ? PLAN_SYSTEM_PROMPT : SYSTEM_PROMPT,
       messages: modelMessages,
     });
 

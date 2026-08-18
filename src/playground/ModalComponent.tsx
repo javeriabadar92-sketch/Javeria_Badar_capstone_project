@@ -77,19 +77,19 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           <div
             ref={modalRef}
             onClick={(e) => e.stopPropagation()}
-            className="pointer-events-auto bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 transform transition-all duration-300 ease-out animate-in fade-in slide-in-from-bottom-4"
+            className="pointer-events-auto mx-4 w-full max-w-md transform rounded-xl border border-[#334155] bg-[#1E293B] text-[#E2E8F0] shadow-2xl shadow-black/40 transition-all duration-300 ease-out animate-in fade-in slide-in-from-bottom-4"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100">
+            <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
               <h2
                 id={`modal-title-${title}`}
-                className="font-roboto text-xl font-semibold text-slate-900 tracking-tight"
+                className="text-xl font-semibold tracking-tight text-[#818CF8]"
               >
                 {title}
               </h2>
               <button
                 onClick={onClose}
-                className="font-inter text-2xl text-slate-500 hover:text-slate-700 transition-colors duration-200 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+                className="focus-ring flex size-8 items-center justify-center rounded-lg text-2xl text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-100"
                 aria-label="Close modal"
               >
                 ×
@@ -97,20 +97,20 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             </div>
 
             {/* Content */}
-            <div className="px-6 py-6 max-h-96 overflow-y-auto font-openSans text-slate-700 leading-relaxed">
+            <div className="max-h-96 overflow-y-auto px-6 py-6 leading-relaxed text-slate-300">
               {children}
             </div>
 
             {/* Footer */}
-            <div className="flex gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50 rounded-b-xl">
+            <div className="flex gap-3 rounded-b-xl border-t border-white/10 bg-slate-950/30 px-6 py-4">
               <button
                 onClick={onClose}
-                className="font-roboto flex-1 px-4 py-2 bg-slate-200 text-slate-900 rounded-lg font-medium hover:bg-slate-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-1"
+                className="focus-ring flex-1 rounded-lg border border-white/15 bg-white/5 px-4 py-2 font-medium text-slate-200 transition-colors hover:bg-white/10"
               >
                 Close
               </button>
               <button
-                className="font-roboto flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+                className="focus-ring flex-1 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/85"
               >
                 Confirm
               </button>

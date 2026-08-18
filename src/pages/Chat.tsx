@@ -35,11 +35,11 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-900">
+    <section className="flex min-h-[calc(100vh-4rem)] flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-900/55 text-slate-100 shadow-2xl shadow-black/20">
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 space-y-4"
+        className="flex-1 space-y-4 overflow-y-auto p-4 sm:p-6"
       >
         {messages.map((message) => (
           <div
@@ -51,8 +51,8 @@ export default function Chat() {
             <div
               className={`max-w-[80%] rounded-lg px-4 py-2 ${
                 message.role === 'user'
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-slate-700 text-slate-100'
+                  ? 'bg-primary text-primary-foreground'
+                    : 'surface-card text-[#E2E8F0]'
               }`}
             >
               {message.parts.map((part, i) =>
@@ -64,7 +64,7 @@ export default function Chat() {
 
         {status === 'submitted' && (
           <div className="flex justify-start">
-            <div className="bg-slate-700 text-slate-100 rounded-lg px-4 py-2">
+            <div className="surface-card rounded-lg px-4 py-2 text-[#E2E8F0]">
               <span className="animate-pulse">Thinking...</span>
             </div>
           </div>
@@ -72,7 +72,7 @@ export default function Chat() {
 
         {error && (
           <div className="flex justify-center">
-            <div className="max-w-[80%] rounded-lg border border-red-500 bg-red-900/40 px-4 py-2 text-sm text-red-100">
+            <div className="max-w-[80%] rounded-lg border border-red-400/30 bg-red-950/40 px-4 py-2 text-sm text-red-200">
               {error.message}
             </div>
           </div>
@@ -87,38 +87,38 @@ export default function Chat() {
                 behavior: 'smooth',
               });
             }}
-            className="fixed bottom-24 right-8 bg-indigo-600 text-white px-4 py-2 rounded-full shadow-lg"
+            className="focus-ring fixed bottom-24 right-4 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-black/30 sm:right-8"
           >
             ↓ Jump to latest
           </button>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="border-t border-slate-700 p-4 flex gap-2">
+      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-white/10 bg-slate-950/20 p-4 sm:p-5">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Describe your project idea..."
           disabled={isStreaming}
-          className="flex-1 rounded-lg border border-slate-600 bg-slate-800 text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="focus-ring min-w-0 flex-1 rounded-lg border border-white/15 bg-slate-800 px-4 py-2 text-slate-100 placeholder:text-slate-500"
         />
         {isStreaming ? (
           <button
             type="button"
             onClick={stop}
-            className="bg-red-600 text-white px-6 py-2 rounded-lg font-semibold"
+            className="focus-ring rounded-lg bg-red-500 px-5 py-2 font-semibold text-white transition-colors hover:bg-red-400"
           >
             Stop
           </button>
         ) : (
           <button
             type="submit"
-            className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold"
+            className="focus-ring rounded-lg bg-primary px-5 py-2 font-semibold text-primary-foreground transition-colors hover:bg-primary/85"
           >
             Send
           </button>
         )}
       </form>
-    </div>
+    </section>
   );
 }

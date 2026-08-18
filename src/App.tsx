@@ -10,23 +10,26 @@ import Requirements from './pages/Requirements'
 import Roadmap from './pages/Roadmap'
 import UserStories from './pages/UserStories'
 import PlaygroundPage from './playground/PlaygroundPage';
+import { PlanProvider } from './context/PlanContext'
 
 function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Overview />} />
-        <Route path="/requirements" element={<Requirements />} />
-        <Route path="/user-stories" element={<UserStories />} />
-        <Route path="/features" element={<Features />} />
-        <Route path="/roadmap" element={<Roadmap />} />
-        <Route path="/kanban" element={<KanbanBoard />} />
-        <Route path="/notes" element={<Notes />} />
-        <Route path="chat" element={<Chat />} />
-        <Route path="/health-check" element={<HealthCheck />} />
-        <Route path="/playground" element={<PlaygroundPage />} />
-      </Route>
-    </Routes>
+    <PlanProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Overview />} />
+          <Route path="/requirements" element={<Requirements />} />
+          <Route path="/user-stories" element={<UserStories />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/kanban" element={<KanbanBoard />} />
+          <Route path="/notes" element={<Notes />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/health-check" element={<HealthCheck />} />
+          <Route path="/playground" element={<PlaygroundPage />} />
+        </Route>
+      </Routes>
+    </PlanProvider>
   )
 }
 

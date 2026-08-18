@@ -2,13 +2,11 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
-@import "@fontsource-variable/roboto";
-@import "@fontsource-variable/open-sans";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: 'Inter', 'Roboto', 'Open Sans', 'Arial', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter Variable', 'Inter', sans-serif;
   line-height: 1.6;
   font-weight: 400;
   font-size: 16px;
@@ -19,30 +17,30 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: 0.3px;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: oklch(0.13 0.03 255);
+  --foreground: oklch(0.97 0.01 250);
+  --card: #1E293B;
+  --card-foreground: #E2E8F0;
+  --popover: #1E293B;
+  --popover-foreground: #E2E8F0;
+  --primary: #818CF8;
+  --primary-foreground: #0F172A;
+  --secondary: oklch(0.25 0.04 255);
+  --secondary-foreground: oklch(0.93 0.02 250);
+  --muted: oklch(0.23 0.035 255);
+  --muted-foreground: oklch(0.72 0.03 250);
+  --accent: oklch(0.3 0.05 255);
+  --accent-foreground: oklch(0.97 0.01 250);
+  --destructive: oklch(0.7 0.18 25);
+  --border: #334155;
+  --input: oklch(1 0 0 / 16%);
+  --ring: #818CF8;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -61,8 +59,34 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #020617 0%, #111827 100%);
-  font-family: Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: radial-gradient(circle at top right, #172554 0%, transparent 34rem), #020617;
+  font-family: 'Inter Variable', 'Inter', sans-serif;
+}
+
+@layer components {
+  .page-shell {
+    @apply min-h-[calc(100vh-4rem)] rounded-xl border border-white/10 bg-slate-900/55 p-5 text-slate-100 shadow-2xl shadow-black/20 sm:p-8;
+  }
+
+  .surface-card {
+    @apply rounded-xl border border-[#334155] bg-[#1E293B] text-[#E2E8F0] shadow-xl shadow-black/10;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.3em] text-primary;
+  }
+
+  .page-title {
+    @apply mt-2 text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl;
+  }
+
+  .page-subtitle {
+    @apply mt-3 text-sm leading-7 text-slate-300 sm:text-[15px];
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
+  }
 }
 
 #root {

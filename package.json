@@ -22,6 +22,7 @@
     "ai": "^7.0.66",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "jspdf": "^4.2.1",
     "lucide-react": "^1.31.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

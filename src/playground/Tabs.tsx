@@ -14,7 +14,7 @@ export function Tabs({ tabs }: TabsProps) {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-    let newIndex = activeIndex;
+    let newIndex: number;
 
     if (e.key === 'ArrowRight') {
       newIndex = (activeIndex + 1) % tabs.length;
@@ -34,12 +34,12 @@ export function Tabs({ tabs }: TabsProps) {
   };
 
   return (
-    <div className="w-full rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
+    <div className="surface-card w-full overflow-hidden">
       {/* Tab List */}
       <div
         role="tablist"
         aria-label="Content tabs"
-        className="flex bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200"
+        className="flex flex-wrap border-b border-white/10 bg-slate-950/25"
       >
         {tabs.map((tab, index) => (
           <button
@@ -54,11 +54,11 @@ export function Tabs({ tabs }: TabsProps) {
             tabIndex={activeIndex === index ? 0 : -1}
             onClick={() => setActiveIndex(index)}
             onKeyDown={handleKeyDown}
-            className={`font-roboto px-6 py-3 font-medium text-sm transition-all duration-200 ease-out border-b-2 ${
+            className={`focus-ring border-b-2 px-5 py-3 text-sm font-medium transition-all duration-200 ease-out ${
               activeIndex === index
-                ? 'border-indigo-600 text-indigo-700 bg-white'
-                : 'border-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-            } focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-inset`}
+                ? 'border-primary bg-primary/10 text-primary'
+                : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-100'
+            }`}
           >
             {tab.label}
           </button>
@@ -80,7 +80,7 @@ export function Tabs({ tabs }: TabsProps) {
               : 'opacity-0 invisible absolute'
           }`}
         >
-          <div className="font-openSans text-slate-700 leading-relaxed space-y-3">
+          <div className="space-y-3 leading-relaxed text-slate-300">
             {tab.content}
           </div>
         </div>
