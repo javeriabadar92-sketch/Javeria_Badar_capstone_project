@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { MessageSquare } from 'lucide-react';
 import { Modal } from './ModalComponent.tsx';
 import { Tabs } from './Tabs.tsx';
 import { Disclosure } from './Disclosure.tsx';
+import PageHeader from '../components/PageHeader';
 
 export default function PlaygroundPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,19 +18,16 @@ export default function PlaygroundPage() {
     <div className="page-shell min-h-[calc(100vh-4rem)]">
       <div className="mx-auto max-w-6xl space-y-8">
         {/* Header Section */}
-        <div>
-          <p className="eyebrow">Component lab</p>
-          <h1 className="page-title">
-            AI Development Hub
-          </h1>
-          <p className="page-subtitle">
-            Interact with AI components and explore machine learning workflows
-          </p>
-        </div>
+        <PageHeader
+          eyebrow="Component lab"
+          icon={MessageSquare}
+          title={<>AI Development <span className="text-cyan-600">Hub</span></>}
+          subtitle="Interact with AI components and explore machine learning workflows"
+        />
 
         {/* Modal Section */}
         <section className="surface-card p-5 sm:p-8">
-          <h2 className="text-xl font-semibold text-[#818CF8] sm:text-2xl">
+          <h2 className="text-xl font-semibold text-cyan-700 sm:text-2xl">
             Model Configuration
           </h2>
           <p className="page-subtitle mb-6">
@@ -45,20 +44,20 @@ export default function PlaygroundPage() {
             onClose={() => setIsModalOpen(false)}
             title="Model Settings"
           >
-            <p className="text-slate-300">
+            <p className="text-slate-700">
               Set learning rate, batch size, and other training parameters.
             </p>
             <input 
               type="text" 
               placeholder="Enter learning rate..." 
-              className="focus-ring w-full rounded-lg border border-white/15 bg-slate-950/40 p-3 text-slate-100 placeholder:text-slate-500" 
+              className="focus-ring w-full rounded-lg border border-slate-300 bg-white p-3 text-slate-800 placeholder:text-slate-500" 
             />
           </Modal>
         </section>
 
         {/* Tabs Section */}
         <section className="surface-card p-5 sm:p-8">
-          <h2 className="text-xl font-semibold text-[#818CF8] sm:text-2xl">
+          <h2 className="text-xl font-semibold text-cyan-700 sm:text-2xl">
             Development Workflow
           </h2>
           <p className="page-subtitle mb-6">
@@ -69,7 +68,7 @@ export default function PlaygroundPage() {
 
         {/* Disclosure Section */}
         <section className="surface-card p-5 sm:p-8">
-          <h2 className="text-xl font-semibold text-[#818CF8] sm:text-2xl">
+          <h2 className="text-xl font-semibold text-cyan-700 sm:text-2xl">
             AI Fundamentals
           </h2>
           <p className="page-subtitle mb-6">
@@ -77,17 +76,17 @@ export default function PlaygroundPage() {
           </p>
           <div className="space-y-4">
             <Disclosure title="Neural Networks Basics">
-              <p className="leading-relaxed text-slate-300">
+              <p className="leading-relaxed text-slate-700">
                 Deep neural networks learn hierarchical representations of data through multiple layers of neurons. Training involves backpropagation to minimize loss and optimize weights efficiently.
               </p>
             </Disclosure>
             <Disclosure title="Transformer Architecture">
-              <p className="leading-relaxed text-slate-300">
+              <p className="leading-relaxed text-slate-700">
                 Transformers use attention mechanisms to process sequential data in parallel. They power modern large language models and have revolutionized NLP applications globally.
               </p>
             </Disclosure>
             <Disclosure title="Model Optimization">
-              <p className="leading-relaxed text-slate-300">
+              <p className="leading-relaxed text-slate-700">
                 Quantization, pruning, and knowledge distillation reduce model size for faster inference. Optimization techniques enable deployment on edge devices and reduce computational costs.
               </p>
             </Disclosure>

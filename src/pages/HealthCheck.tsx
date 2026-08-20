@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+import { CheckCircle2 } from 'lucide-react'
+import LoadingSkeleton from '../components/LoadingSkeleton'
+import PageHeader from '../components/PageHeader'
 
 type Quote = {
   id: number
@@ -34,41 +37,46 @@ export default function HealthCheck() {
   return (
     <section className="page-shell">
       <div className="mb-6 flex items-center justify-between gap-4">
-        <div>
-          <p className="eyebrow">Health Check</p>
-          <h2 className="page-title">API connectivity status</h2>
-        </div>
-        <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+        <PageHeader
+          eyebrow="Health Check"
+          icon={CheckCircle2}
+          title={<>API connectivity <span className="text-cyan-600">status</span></>}
+        />
+        <span className="rounded-full border border-cyan-200 bg-[#ECFEFF] px-3 py-1 text-sm font-medium text-cyan-700">
           Live test
         </span>
       </div>
 
-      {loading && <p className="page-subtitle">Loading...</p>}
+      {loading && (
+        <div className="surface-card p-5 sm:p-6">
+          <LoadingSkeleton rows={5} />
+        </div>
+      )}
 
       {error && (
-        <div className="surface-card border-red-400/30 bg-red-950/30 p-4 text-red-200">
+        <div className="surface-card border-red-200 bg-red-50 p-4 text-red-800">
           <p className="font-medium">Unable to load data.</p>
-          <p className="mt-1 text-sm text-red-200/80">{error}</p>
+          <p className="mt-1 text-sm text-red-700">{error}</p>
         </div>
       )}
 
       {quote && !error && (
         <div className="surface-card p-5 sm:p-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-[#818CF8]">Quote #{quote.id}</h3>
-            <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-sm font-semibold text-amber-200">
+            <h3 className="text-xl font-semibold text-cyan-600">Quote #{quote.id}</h3>
+            <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm font-semibold text-amber-800">
               Live quote
             </span>
           </div>
-          <p className="mt-4 text-[15px] leading-7 text-slate-300">&quot;{quote.quote}&quot;</p>
+          <p className="mt-4 text-[15px] leading-7 text-slate-700">&quot;{quote.quote}&quot;</p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border border-[#334155] bg-[#1E293B] p-4">
-              <p className="text-sm font-medium text-slate-400">Author</p>
-              <p className="mt-1 text-lg font-bold text-[#818CF8]">{quote.author}</p>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-sm">
+              <p className="text-sm font-medium text-slate-600">Author</p>
+              <p className="mt-1 text-lg font-bold text-cyan-600">{quote.author}</p>
             </div>
-            <div className="rounded-lg border border-[#334155] bg-[#1E293B] p-4">
-              <p className="text-sm font-medium text-slate-400">Quote ID</p>
-              <p className="mt-1 text-lg font-bold text-[#818CF8]">{quote.id}</p>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-sm">
+              <p className="text-sm font-medium text-slate-600">Quote ID</p>
+              <p className="mt-1 text-lg font-bold text-cyan-600">{quote.id}</p>
             </div>
           </div>
         </div>

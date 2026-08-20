@@ -21,19 +21,19 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-[1440px] flex-col lg:flex-row">
-        <aside className="border-b border-white/10 bg-[#0F172A]/95 px-4 py-4 shadow-2xl shadow-black/20 backdrop-blur lg:sticky lg:top-0 lg:min-h-screen lg:w-72 lg:border-b-0 lg:border-r lg:px-6 lg:py-8">
+        <aside className="border-b border-slate-200 bg-white px-4 py-4 shadow-sm lg:sticky lg:top-0 lg:min-h-screen lg:w-72 lg:border-b-0 lg:border-r lg:px-6 lg:py-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-600">
                 PROJECTPILOT AI
               </p>
-              <h1 className="mt-1 text-lg font-semibold tracking-tight text-slate-100">
+              <h1 className="mt-1 text-lg font-semibold tracking-tight text-slate-900">
                 Planning Workspace
               </h1>
             </div>
             <button
               type="button"
-              className="focus-ring rounded-lg border border-white/10 bg-white/5 p-2 text-slate-200 transition-colors hover:bg-white/10 lg:hidden"
+              className="focus-ring rounded-lg border border-slate-200 bg-white p-2 text-slate-700 transition-colors hover:bg-slate-50 lg:hidden"
               onClick={() => setMenuOpen((open) => !open)}
               aria-label="Toggle navigation"
             >
@@ -50,10 +50,10 @@ export default function Layout() {
                 end={item.to === '/'}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `focus-ring relative flex items-center rounded-xl border-l-2 px-3 py-2 text-sm font-medium transition-colors ${
+                  `focus-ring relative flex items-center rounded-xl border-l-2 px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                     isActive
-                      ? 'border-primary bg-primary/10 text-[#E0E7FF] shadow-sm'
-                      : 'border-transparent text-slate-300 hover:border-primary/60 hover:bg-primary/10 hover:text-[#F8FAFC]'
+                      ? 'nav-active'
+                      : 'border-transparent text-slate-600 hover:border-cyan-300 hover:bg-slate-50 hover:text-slate-900'
                   }`
                 }
               >
@@ -75,7 +75,7 @@ export default function Layout() {
           <ProjectSwitcher />
         </aside>
 
-        <main className="min-w-0 flex-1 bg-[#111827] p-4 sm:p-6 lg:p-8">
+        <main className="min-w-0 flex-1 bg-slate-50 p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

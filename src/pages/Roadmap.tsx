@@ -1,4 +1,6 @@
 import { Map } from 'lucide-react'
+import InlineEmptyState from '../components/InlineEmptyState'
+import PageHeader from '../components/PageHeader'
 import PlanEmptyState from '../components/PlanEmptyState'
 import { usePlan } from '../context/usePlan'
 
@@ -8,17 +10,27 @@ export default function Roadmap() {
 
   return (
     <section className="page-shell">
-      <p className="eyebrow">Sequence</p>
-      <h1 className="page-title">Development Roadmap</h1>
-      <p className="page-subtitle">A practical sequence of milestones from first setup to release.</p>
-      <div className="relative mt-8 space-y-5 before:absolute before:bottom-6 before:left-[11px] before:top-6 before:w-px before:bg-[#818CF8]/30">
+      <PageHeader
+        eyebrow="Sequence"
+        icon={Map}
+        title={<>Development <span className="text-cyan-600">Roadmap</span></>}
+        subtitle="A practical sequence of milestones from first setup to release."
+      />
+      <div className="relative mt-8 space-y-5 before:absolute before:bottom-6 before:left-[11px] before:top-6 before:w-px before:bg-cyan-500/30">
+        {plan.roadmap.length === 0 && (
+          <InlineEmptyState
+            icon={Map}
+            title="No roadmap milestones yet"
+            description="Your generated plan will appear here once milestones are available."
+          />
+        )}
         {plan.roadmap.map((item, index) => (
           <article key={`${item.phase}-${index}`} className="relative flex gap-4">
-            <span className="relative mt-1.5 size-6 shrink-0 rounded-full border-4 border-slate-900 bg-[#818CF8]" aria-hidden="true" />
+            <span className="relative mt-1.5 size-6 shrink-0 rounded-full border-4 border-white bg-cyan-500" aria-hidden="true" />
             <div className="surface-card min-w-0 flex-1 p-5">
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Phase {index + 1}</span>
-              <h2 className="mt-2 text-lg font-semibold text-[#818CF8]">{item.phase}</h2>
-              <p className="mt-2 text-sm leading-6 text-[#E2E8F0]">{item.description}</p>
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Phase {index + 1}</span>
+              <h2 className="mt-2 text-lg font-semibold text-cyan-600">{item.phase}</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-700">{item.description}</p>
             </div>
           </article>
         ))}

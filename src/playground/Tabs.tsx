@@ -39,7 +39,7 @@ export function Tabs({ tabs }: TabsProps) {
       <div
         role="tablist"
         aria-label="Content tabs"
-        className="flex flex-wrap border-b border-white/10 bg-slate-950/25"
+        className="flex flex-wrap border-b border-slate-200 bg-slate-50"
       >
         {tabs.map((tab, index) => (
           <button
@@ -56,8 +56,8 @@ export function Tabs({ tabs }: TabsProps) {
             onKeyDown={handleKeyDown}
             className={`focus-ring border-b-2 px-5 py-3 text-sm font-medium transition-all duration-200 ease-out ${
               activeIndex === index
-                ? 'border-primary bg-primary/10 text-primary'
-                : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-100'
+                ? 'border-cyan-500 bg-[#ECFEFF] text-cyan-700'
+                : 'border-transparent text-slate-600 hover:bg-white hover:text-slate-900'
             }`}
           >
             {tab.label}
@@ -80,7 +80,7 @@ export function Tabs({ tabs }: TabsProps) {
               : 'opacity-0 invisible absolute'
           }`}
         >
-          <div className="space-y-3 leading-relaxed text-slate-300">
+          <div className="space-y-3 leading-relaxed text-slate-700">
             {tab.content}
           </div>
         </div>

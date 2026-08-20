@@ -14,10 +14,10 @@ export function Disclosure({ title, children }: DisclosureProps) {
         onClick={() => setIsExpanded(!isExpanded)}
         aria-expanded={isExpanded}
         aria-controls="disclosure-content"
-        className="focus-ring flex w-full items-center gap-3 px-5 py-4 text-left font-semibold text-slate-100 transition-colors hover:bg-white/5"
+        className="focus-ring flex w-full items-center gap-3 px-5 py-4 text-left font-semibold text-slate-800 transition-colors hover:bg-slate-50"
       >
         <span
-          className={`flex-shrink-0 text-indigo-600 transition-transform duration-300 ${
+          className={`flex-shrink-0 text-cyan-600 transition-transform duration-300 ${
             isExpanded ? 'rotate-90' : 'rotate-0'
           }`}
         >
@@ -41,7 +41,7 @@ export function Disclosure({ title, children }: DisclosureProps) {
       {isExpanded && (
         <div
           id="disclosure-content"
-          className="border-t border-[#334155] bg-[#1E293B] px-5 py-4 leading-relaxed text-[#E2E8F0] animate-in fade-in duration-300"
+          className="border-t border-slate-200 bg-slate-50 px-5 py-4 leading-relaxed text-slate-700 animate-in fade-in duration-300"
         >
           {children}
         </div>

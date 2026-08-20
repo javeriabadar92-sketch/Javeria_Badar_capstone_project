@@ -77,19 +77,19 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           <div
             ref={modalRef}
             onClick={(e) => e.stopPropagation()}
-            className="pointer-events-auto mx-4 w-full max-w-md transform rounded-xl border border-[#334155] bg-[#1E293B] text-[#E2E8F0] shadow-2xl shadow-black/40 transition-all duration-300 ease-out animate-in fade-in slide-in-from-bottom-4"
+            className="pointer-events-auto mx-4 w-full max-w-md transform rounded-xl border border-slate-200 bg-white text-slate-800 shadow-xl shadow-slate-900/10 transition-all duration-300 ease-out animate-in fade-in slide-in-from-bottom-4"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
               <h2
                 id={`modal-title-${title}`}
-                className="text-xl font-semibold tracking-tight text-[#818CF8]"
+                className="text-xl font-semibold tracking-tight text-cyan-700"
               >
                 {title}
               </h2>
               <button
                 onClick={onClose}
-                className="focus-ring flex size-8 items-center justify-center rounded-lg text-2xl text-slate-400 transition-colors hover:bg-white/10 hover:text-slate-100"
+                className="focus-ring flex size-8 items-center justify-center rounded-lg text-2xl text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900"
                 aria-label="Close modal"
               >
                 ×
@@ -97,15 +97,15 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             </div>
 
             {/* Content */}
-            <div className="max-h-96 overflow-y-auto px-6 py-6 leading-relaxed text-slate-300">
+            <div className="max-h-96 overflow-y-auto px-6 py-6 leading-relaxed text-slate-700">
               {children}
             </div>
 
             {/* Footer */}
-            <div className="flex gap-3 rounded-b-xl border-t border-white/10 bg-slate-950/30 px-6 py-4">
+            <div className="flex gap-3 rounded-b-xl border-t border-slate-200 bg-slate-50 px-6 py-4">
               <button
                 onClick={onClose}
-                className="focus-ring flex-1 rounded-lg border border-white/15 bg-white/5 px-4 py-2 font-medium text-slate-200 transition-colors hover:bg-white/10"
+                className="focus-ring flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 transition-colors hover:bg-slate-50"
               >
                 Close
               </button>

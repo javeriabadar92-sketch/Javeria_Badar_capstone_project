@@ -1,6 +1,15 @@
 import { useChat } from '@ai-sdk/react';
 import { useRef, useEffect, useState } from 'react';
 
+const RATE_LIMIT_MESSAGE = "We've hit a temporary usage limit. Please wait a minute and try again.";
+
+function getChatErrorMessage(error: Error): string {
+  const message = error.message.toLowerCase();
+  return message.includes('rate limit') || message.includes('quota') || message.includes('429') || message.includes('resource_exhausted')
+    ? RATE_LIMIT_MESSAGE
+    : error.message;
+}
+
 export default function Chat() {
   const { messages, sendMessage, status, stop, error } = useChat({
     onError: (error) => {
@@ -35,7 +44,7 @@ export default function Chat() {
   };
 
   return (
-    <section className="flex min-h-[calc(100vh-4rem)] flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-900/55 text-slate-100 shadow-2xl shadow-black/20">
+    <section className="flex min-h-[calc(100vh-4rem)] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white text-slate-800 shadow-sm">
       <div
         ref={scrollRef}
         onScroll={handleScroll}
@@ -51,8 +60,8 @@ export default function Chat() {
             <div
               className={`max-w-[80%] rounded-lg px-4 py-2 ${
                 message.role === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                    : 'surface-card text-[#E2E8F0]'
+                  ? 'bg-primary text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm'
+                    : 'rounded-lg border border-slate-200 bg-slate-100 text-slate-800 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm'
               }`}
             >
               {message.parts.map((part, i) =>
@@ -64,8 +73,10 @@ export default function Chat() {
 
         {status === 'submitted' && (
           <div className="flex justify-start">
-            <div className="surface-card rounded-lg px-4 py-2 text-[#E2E8F0]">
-              <span className="animate-pulse">Thinking...</span>
+            <div className="surface-card max-w-xs space-y-2 rounded-lg px-4 py-3">
+              <div className="h-3 w-24 animate-pulse rounded bg-slate-200" />
+              <div className="h-3 w-full animate-pulse rounded bg-slate-200" />
+              <div className="h-3 w-4/5 animate-pulse rounded bg-slate-200" />
             </div>
           </div>
         )}
@@ -73,7 +84,7 @@ export default function Chat() {
         {error && (
           <div className="flex justify-center">
             <div className="max-w-[80%] rounded-lg border border-red-400/30 bg-red-950/40 px-4 py-2 text-sm text-red-200">
-              {error.message}
+              {getChatErrorMessage(error)}
             </div>
           </div>
         )}
@@ -87,20 +98,20 @@ export default function Chat() {
                 behavior: 'smooth',
               });
             }}
-            className="focus-ring fixed bottom-24 right-4 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-black/30 sm:right-8"
+            className="focus-ring fixed bottom-24 right-4 rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-cyan-600 sm:right-8"
           >
             ↓ Jump to latest
           </button>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-white/10 bg-slate-950/20 p-4 sm:p-5">
+      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-slate-200 bg-slate-50 p-4 sm:p-5">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Describe your project idea..."
           disabled={isStreaming}
-          className="focus-ring min-w-0 flex-1 rounded-lg border border-white/15 bg-slate-800 px-4 py-2 text-slate-100 placeholder:text-slate-500"
+          className="focus-ring min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2 text-slate-800 placeholder:text-slate-500"
         />
         {isStreaming ? (
           <button
