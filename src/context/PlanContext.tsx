@@ -2,10 +2,19 @@ import { useState, useEffect, useCallback, useRef, type ReactNode } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { DefaultChatTransport } from 'ai'
 import { PlanContext } from './plan-context'
+import {
+  createPlanItem,
+  createUserStoryItem,
+  normalizePlanItems,
+  normalizeUserStoryItems,
+  parseAcceptanceCriteria,
+  type PlanItem,
+  type UserStoryItem,
+} from './plan-items'
 
 export type RequirementSet = {
-  functional: string[]
-  nonFunctional: string[]
+  functional: PlanItem[]
+  nonFunctional: PlanItem[]
 }
 
 export type RoadmapItem = {
@@ -24,8 +33,8 @@ export type ProjectPlan = {
   projectIdea: string
   overview: string
   requirements: RequirementSet
-  userStories: string[]
-  suggestedFeatures: string[]
+  userStories: UserStoryItem[]
+  suggestedFeatures: PlanItem[]
   roadmap: RoadmapItem[]
   kanbanTasks: KanbanTask[]
 }
@@ -42,7 +51,16 @@ type ProjectsState = {
   activeProjectId: string | null
 }
 
+type GenerationIntent = 'create' | 'regenerate'
+
 const STORAGE_KEY = 'projectpilot-projects'
+const RATE_LIMIT_MESSAGE = "We've hit a temporary usage limit. Please wait a minute and try again."
+
+function isRateLimitError(error: unknown): boolean {
+  const text = error instanceof Error ? error.message : String(error)
+  const normalizedText = text.toLowerCase()
+  return normalizedText.includes('rate limit') || normalizedText.includes('quota') || normalizedText.includes('429') || normalizedText.includes('resource_exhausted')
+}
 
 const PLAN_PROMPT = `You are ProjectPilot AI. Turn the student's project idea below into a practical software engineering plan.
 Return ONLY valid JSON. Do not include markdown fences, commentary, or extra keys.
@@ -63,6 +81,10 @@ Every kanban status must be exactly "todo", "inProgress", or "done". Keep the pl
 Student project idea:
 `
 
+const ACCEPTANCE_CRITERIA_PROMPT = `Return ONLY valid JSON with no markdown fences or extra keys.
+Use exactly this shape: {"acceptanceCriteria":["string"]}
+Provide 3-4 specific, testable acceptance criteria bullet points for this user story:`
+
 function asStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0) : []
 }
@@ -77,11 +99,11 @@ function parsePlan(text: string, projectIdea: string): ProjectPlan {
     projectIdea,
     overview: typeof raw.overview === 'string' ? raw.overview : 'A structured plan for your project.',
     requirements: {
-      functional: asStringArray(rawRequirements?.functional),
-      nonFunctional: asStringArray(rawRequirements?.nonFunctional),
+      functional: asStringArray(rawRequirements?.functional).map((item) => createPlanItem(item)),
+      nonFunctional: asStringArray(rawRequirements?.nonFunctional).map((item) => createPlanItem(item)),
     },
-    userStories: asStringArray(raw.userStories),
-    suggestedFeatures: asStringArray(raw.suggestedFeatures),
+    userStories: asStringArray(raw.userStories).map((item) => createUserStoryItem(item)),
+    suggestedFeatures: asStringArray(raw.suggestedFeatures).map((item) => createPlanItem(item)),
     roadmap: Array.isArray(raw.roadmap)
       ? raw.roadmap.flatMap((item) => {
           if (!item || typeof item !== 'object') return []
@@ -102,6 +124,18 @@ function parsePlan(text: string, projectIdea: string): ProjectPlan {
   }
 }
 
+function migratePlan(plan: ProjectPlan): ProjectPlan {
+  return {
+    ...plan,
+    requirements: {
+      functional: normalizePlanItems(plan.requirements?.functional),
+      nonFunctional: normalizePlanItems(plan.requirements?.nonFunctional),
+    },
+    userStories: normalizeUserStoryItems(plan.userStories),
+    suggestedFeatures: normalizePlanItems(plan.suggestedFeatures),
+  }
+}
+
 function deriveTitle(idea: string): string {
   const words = idea.trim().split(/\s+/)
   const title = words.slice(0, 5).join(' ')
@@ -114,22 +148,41 @@ function loadProjects(): ProjectsState {
     if (!raw) return { projects: [], activeProjectId: null }
     const parsed = JSON.parse(raw) as ProjectsState
     if (!Array.isArray(parsed.projects)) return { projects: [], activeProjectId: null }
-    return parsed
+
+    const projects = parsed.projects.map((project) => ({
+      ...project,
+      plan: migratePlan(project.plan),
+    }))
+
+    const activeProjectId = projects.some((project) => project.id === parsed.activeProjectId)
+      ? parsed.activeProjectId
+      : projects[0]?.id ?? null
+
+    return { projects, activeProjectId }
   } catch {
     return { projects: [], activeProjectId: null }
   }
 }
 
 function saveProjects(state: ProjectsState) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+  } catch (error) {
+    console.error('Failed to save projects to localStorage:', error)
+  }
 }
 
 export function PlanProvider({ children }: { children: ReactNode }) {
   const [projectsState, setProjectsState] = useState<ProjectsState>(loadProjects)
   const [generationError, setGenerationError] = useState<string | null>(null)
+  const [generatingCriteriaForStoryId, setGeneratingCriteriaForStoryId] = useState<string | null>(null)
+
   const activeIdeaRef = useRef('')
-  const regeneratingRef = useRef(false)
+  const generationIntentRef = useRef<GenerationIntent>('create')
+  const pendingGenerationIdRef = useRef<number | null>(null)
+  const generationCounterRef = useRef(0)
   const activeProjectIdRef = useRef<string | null>(null)
+  const criteriaStoryIdRef = useRef<string | null>(null)
 
   useEffect(() => {
     saveProjects(projectsState)
@@ -145,81 +198,127 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       return {
         ...prev,
         projects: prev.projects.map((p) =>
-          p.id === prev.activeProjectId ? { ...p, plan: updater(p.plan) } : p,
+          p.id === prev.activeProjectId ? { ...p, plan: migratePlan(updater(p.plan)) } : p,
         ),
       }
     })
   }, [])
 
   const handlePlanGenerated = useCallback((parsedPlan: ProjectPlan, idea: string, replaceId?: string) => {
+    const migratedPlan = migratePlan(parsedPlan)
+
     if (replaceId) {
       setProjectsState((prev) => ({
         ...prev,
         projects: prev.projects.map((p) =>
-          p.id === replaceId ? { ...p, plan: parsedPlan } : p,
+          p.id === replaceId ? { ...p, plan: migratedPlan, title: deriveTitle(idea) } : p,
         ),
       }))
     } else {
       const newProject: SavedProject = {
         id: crypto.randomUUID(),
         title: deriveTitle(idea),
-        plan: parsedPlan,
+        plan: migratedPlan,
         createdAt: Date.now(),
       }
       setProjectsState((prev) => ({
-        projects: [newProject, ...prev.projects],
+        projects: [newProject, ...prev.projects.filter((project) => project.id !== newProject.id)],
         activeProjectId: newProject.id,
       }))
     }
     setGenerationError(null)
-    regeneratingRef.current = false
+    pendingGenerationIdRef.current = null
   }, [])
+
+  const finishPlanGeneration = useCallback((generationId: number, parsedPlan: ProjectPlan) => {
+    if (pendingGenerationIdRef.current !== generationId) return
+
+    if (generationIntentRef.current === 'regenerate' && activeProjectIdRef.current) {
+      handlePlanGenerated(parsedPlan, activeIdeaRef.current, activeProjectIdRef.current)
+      return
+    }
+
+    handlePlanGenerated(parsedPlan, activeIdeaRef.current)
+  }, [handlePlanGenerated])
 
   const { sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat', body: { mode: 'plan' } }),
     onFinish: ({ message, isError }) => {
-      if (isError) {
-        regeneratingRef.current = false
+      const generationId = pendingGenerationIdRef.current
+      if (isError || generationId === null) {
+        pendingGenerationIdRef.current = null
         return
       }
+
       const text = message.parts
         .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
         .map((part) => part.text)
         .join('')
 
       try {
-        const parsedPlan = parsePlan(text, activeIdeaRef.current)
-        if (regeneratingRef.current && activeProjectIdRef.current) {
-          handlePlanGenerated(parsedPlan, activeIdeaRef.current, activeProjectIdRef.current)
-        } else {
-          handlePlanGenerated(parsedPlan, activeIdeaRef.current)
-        }
+        finishPlanGeneration(generationId, parsePlan(text, activeIdeaRef.current))
       } catch {
         setGenerationError('The AI returned an incomplete plan. Please try again.')
-        regeneratingRef.current = false
+        pendingGenerationIdRef.current = null
       }
     },
     onError: (requestError) => {
-      setGenerationError(requestError.message || 'Unable to generate a plan right now.')
-      regeneratingRef.current = false
+      setGenerationError(isRateLimitError(requestError) ? RATE_LIMIT_MESSAGE : requestError.message || 'Unable to generate a plan right now.')
+      pendingGenerationIdRef.current = null
     },
   })
+
+  const { sendMessage: sendCriteriaMessage, status: criteriaStatus } = useChat({
+    transport: new DefaultChatTransport({ api: '/api/chat', body: { mode: 'acceptance-criteria' } }),
+    onFinish: ({ message, isError }) => {
+      const storyId = criteriaStoryIdRef.current
+      if (isError || !storyId) {
+        setGeneratingCriteriaForStoryId(null)
+        criteriaStoryIdRef.current = null
+        return
+      }
+
+      const text = message.parts
+        .filter((part): part is Extract<typeof part, { type: 'text' }> => part.type === 'text')
+        .map((part) => part.text)
+        .join('')
+
+      const acceptanceCriteria = parseAcceptanceCriteria(text)
+      updateActivePlan((current) => ({
+        ...current,
+        userStories: current.userStories.map((story) =>
+          story.id === storyId ? { ...story, acceptanceCriteria } : story,
+        ),
+      }))
+
+      setGeneratingCriteriaForStoryId(null)
+      criteriaStoryIdRef.current = null
+    },
+    onError: () => {
+      setGeneratingCriteriaForStoryId(null)
+      criteriaStoryIdRef.current = null
+    },
+  })
+
+  const startGeneration = (idea: string, intent: GenerationIntent) => {
+    const generationId = ++generationCounterRef.current
+    activeIdeaRef.current = idea
+    generationIntentRef.current = intent
+    pendingGenerationIdRef.current = generationId
+    setGenerationError(null)
+    sendMessage({ text: `${PLAN_PROMPT}\n${idea}` })
+    return generationId
+  }
 
   const generatePlan = (projectIdea: string) => {
     const trimmedIdea = projectIdea.trim()
     if (!trimmedIdea) return
-    activeIdeaRef.current = trimmedIdea
-    setGenerationError(null)
-    regeneratingRef.current = false
-    sendMessage({ text: `${PLAN_PROMPT}\n${trimmedIdea}` })
+    startGeneration(trimmedIdea, 'create')
   }
 
   const regeneratePlan = () => {
     if (!plan) return
-    activeIdeaRef.current = plan.projectIdea
-    setGenerationError(null)
-    regeneratingRef.current = true
-    sendMessage({ text: `${PLAN_PROMPT}\n${plan.projectIdea}` })
+    startGeneration(plan.projectIdea, 'regenerate')
   }
 
   const switchProject = (id: string) => {
@@ -233,6 +332,23 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     }))
   }
 
+  const deleteProject = (id: string) => {
+    setProjectsState((prev) => {
+      const remaining = prev.projects.filter((project) => project.id !== id)
+      const wasActive = prev.activeProjectId === id
+      return {
+        projects: remaining,
+        activeProjectId: wasActive ? remaining[0]?.id ?? null : prev.activeProjectId,
+      }
+    })
+  }
+
+  const suggestAcceptanceCriteria = (storyId: string, storyText: string) => {
+    criteriaStoryIdRef.current = storyId
+    setGeneratingCriteriaForStoryId(storyId)
+    sendCriteriaMessage({ text: `${ACCEPTANCE_CRITERIA_PROMPT}\n${storyText}` })
+  }
+
   const updateKanbanTasks = (tasks: KanbanTask[]) => {
     updateActivePlan((current) => ({ ...current, kanbanTasks: tasks }))
   }
@@ -241,11 +357,11 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     updateActivePlan((current) => ({ ...current, requirements }))
   }
 
-  const updateUserStories = (userStories: string[]) => {
+  const updateUserStories = (userStories: UserStoryItem[]) => {
     updateActivePlan((current) => ({ ...current, userStories }))
   }
 
-  const updateSuggestedFeatures = (suggestedFeatures: string[]) => {
+  const updateSuggestedFeatures = (suggestedFeatures: PlanItem[]) => {
     updateActivePlan((current) => ({ ...current, suggestedFeatures }))
   }
 
@@ -255,11 +371,15 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     activeProjectId: projectsState.activeProjectId,
     activeProjectTitle: activeProject?.title ?? null,
     isGenerating: status === 'submitted' || status === 'streaming',
+    generatingCriteriaForStoryId,
+    isGeneratingCriteria: criteriaStatus === 'submitted' || criteriaStatus === 'streaming',
     error: generationError || error?.message || null,
     generatePlan,
     regeneratePlan,
     switchProject,
     updateProjectTitle,
+    deleteProject,
+    suggestAcceptanceCriteria,
     updateKanbanTasks,
     updateRequirements,
     updateUserStories,
@@ -268,3 +388,5 @@ export function PlanProvider({ children }: { children: ReactNode }) {
 
   return <PlanContext.Provider value={value}>{children}</PlanContext.Provider>
 }
+
+export type { PlanItem, UserStoryItem } from './plan-items'

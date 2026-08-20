@@ -1,11 +1,11 @@
 import { ListChecks } from 'lucide-react'
-import EditableList from '../components/EditableList'
 import PageHeader from '../components/PageHeader'
 import PlanEmptyState from '../components/PlanEmptyState'
+import UserStoryList from '../components/UserStoryList'
 import { usePlan } from '../context/usePlan'
 
 export default function UserStories() {
-  const { plan, updateUserStories } = usePlan()
+  const { plan, updateUserStories, suggestAcceptanceCriteria, generatingCriteriaForStoryId } = usePlan()
   if (!plan) return <PlanEmptyState title="Discovery" icon={ListChecks} />
 
   return (
@@ -14,13 +14,14 @@ export default function UserStories() {
         eyebrow="Discovery"
         icon={ListChecks}
         title={<>User <span className="text-cyan-600">Stories</span></>}
-        subtitle="User-centered outcomes to keep implementation grounded in real needs. Click any story to edit."
+        subtitle="User-centered outcomes to keep implementation grounded in real needs. Click any story to edit, expand for acceptance criteria."
       />
       <div className="mt-8">
-        <EditableList
+        <UserStoryList
           items={plan.userStories}
           onChange={updateUserStories}
-          variant="card"
+          onSuggestCriteria={suggestAcceptanceCriteria}
+          generatingCriteriaForStoryId={generatingCriteriaForStoryId}
           addLabel="+ Add story"
         />
       </div>

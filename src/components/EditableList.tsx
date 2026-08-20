@@ -1,40 +1,49 @@
 import { useState } from 'react'
-import { Check, ClipboardList, ListChecks, Plus, Sparkles, Trash2, X } from 'lucide-react'
+import { Check, ClipboardList, Plus, Sparkles, Trash2, X } from 'lucide-react'
+import type { PlanItem } from '../context/plan-items'
+import { createPlanItem } from '../context/plan-items'
 import InlineEmptyState from './InlineEmptyState'
+import PriorityTag from './PriorityTag'
+import ReviewToggle from './ReviewToggle'
 
 type EditableListProps = {
-  items: string[]
-  onChange: (items: string[]) => void
-  variant?: 'bullet' | 'card' | 'feature'
+  items: PlanItem[]
+  onChange: (items: PlanItem[]) => void
+  variant?: 'bullet' | 'feature'
   addLabel?: string
   emptyTitle?: string
   emptyDescription?: string
 }
 
 function EditableListItem({
-  value,
+  item,
   onSave,
   onDelete,
+  onPriorityChange,
+  onReviewChange,
   variant,
   index,
   isExiting,
   isEntering,
 }: {
-  value: string
+  item: PlanItem
   onSave: (value: string) => void
   onDelete: () => void
-  variant: 'bullet' | 'card' | 'feature'
+  onPriorityChange: (priority: PlanItem['priority']) => void
+  onReviewChange: (reviewed: boolean) => void
+  variant: 'bullet' | 'feature'
   index: number
   isExiting: boolean
   isEntering: boolean
 }) {
   const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState(value)
+  const [draft, setDraft] = useState(item.text)
 
   const motionClass = `list-item-motion ${isEntering ? 'list-item-enter' : ''} ${isExiting ? 'list-item-exit' : ''}`
+  const reviewedClass = item.reviewed ? 'opacity-75' : ''
 
   const startEdit = () => {
-    setDraft(value)
+    setDraft(item.text)
     setEditing(true)
   }
 
@@ -45,7 +54,7 @@ function EditableListItem({
   }
 
   const cancel = () => {
-    setDraft(value)
+    setDraft(item.text)
     setEditing(false)
   }
 
@@ -55,7 +64,7 @@ function EditableListItem({
         <textarea
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          rows={variant === 'card' || variant === 'feature' ? 3 : 2}
+          rows={variant === 'feature' ? 3 : 2}
           autoFocus
           className="focus-ring min-w-0 flex-1 resize-y rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800"
           onKeyDown={(e) => {
@@ -75,46 +84,38 @@ function EditableListItem({
     )
   }
 
-  if (variant === 'card') {
+  if (variant === 'feature') {
     return (
-      <article className={`surface-card group p-5 ${motionClass}`}>
-        <div className="flex items-start justify-between gap-3">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">Story {String(index + 1).padStart(2, '0')}</span>
-          <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-            <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600">
+      <article className={`surface-card group p-5 ${motionClass} ${reviewedClass}`}>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <ReviewToggle reviewed={item.reviewed} onChange={onReviewChange} />
+            <span className="text-xs font-semibold text-cyan-600">{String(index + 1).padStart(2, '0')}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <PriorityTag priority={item.priority} onChange={onPriorityChange} />
+            <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
               <Trash2 className="size-3.5" />
             </button>
           </div>
         </div>
-        <button type="button" onClick={startEdit} className="focus-ring mt-3 w-full text-left text-[15px] leading-7 text-slate-700 hover:text-slate-900">
-          {value}
-        </button>
-      </article>
-    )
-  }
-
-  if (variant === 'feature') {
-    return (
-      <article className={`surface-card group p-5 ${motionClass}`}>
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-semibold text-cyan-600">{String(index + 1).padStart(2, '0')}</span>
-          <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
-            <Trash2 className="size-3.5" />
-          </button>
-        </div>
-        <button type="button" onClick={startEdit} className="focus-ring mt-5 w-full text-left text-[15px] font-medium leading-7 text-slate-700 hover:text-slate-900">
-          {value}
+        <button type="button" onClick={startEdit} className={`focus-ring mt-4 w-full text-left text-[15px] font-medium leading-7 hover:text-slate-900 ${item.reviewed ? 'text-slate-500 line-through decoration-emerald-300' : 'text-slate-700'}`}>
+          {item.text}
         </button>
       </article>
     )
   }
 
   return (
-    <li className={`group flex items-start gap-2 ${motionClass}`}>
+    <li className={`group flex items-start gap-2 ${motionClass} ${reviewedClass}`}>
+      <ReviewToggle reviewed={item.reviewed} onChange={onReviewChange} />
       <span className="mt-2 size-1.5 shrink-0 rounded-full bg-cyan-500" aria-hidden="true" />
-      <button type="button" onClick={startEdit} className="focus-ring min-w-0 flex-1 text-left text-sm leading-6 text-slate-700 hover:text-slate-900">
-        {value}
-      </button>
+      <div className="min-w-0 flex-1">
+        <button type="button" onClick={startEdit} className={`focus-ring w-full text-left text-sm leading-6 hover:text-slate-900 ${item.reviewed ? 'text-slate-500 line-through decoration-emerald-300' : 'text-slate-700'}`}>
+          {item.text}
+        </button>
+      </div>
+      <PriorityTag priority={item.priority} onChange={onPriorityChange} />
       <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring shrink-0 rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
         <Trash2 className="size-3.5" />
       </button>
@@ -130,36 +131,34 @@ export default function EditableList({
   emptyTitle,
   emptyDescription,
 }: EditableListProps) {
-  const [exitingIndexes, setExitingIndexes] = useState<number[]>([])
-  const [enteringIndexes, setEnteringIndexes] = useState<number[]>([])
+  const [exitingIds, setExitingIds] = useState<string[]>([])
+  const [enteringIds, setEnteringIds] = useState<string[]>([])
 
-  const updateItem = (index: number, value: string) => {
-    onChange(items.map((item, i) => (i === index ? value : item)))
+  const updateItem = (id: string, updater: (item: PlanItem) => PlanItem) => {
+    onChange(items.map((item) => (item.id === id ? updater(item) : item)))
   }
 
-  const deleteItem = (index: number) => {
-    setExitingIndexes((current) => [...current, index])
+  const deleteItem = (id: string) => {
+    setExitingIds((current) => [...current, id])
     window.setTimeout(() => {
-      onChange(items.filter((_, i) => i !== index))
-      setExitingIndexes((current) => current.filter((item) => item !== index))
+      onChange(items.filter((item) => item.id !== id))
+      setExitingIds((current) => current.filter((itemId) => itemId !== id))
     }, 200)
   }
 
   const addItem = () => {
-    const newIndex = items.length
-    onChange([...items, 'New item'])
-    setEnteringIndexes((current) => [...current, newIndex])
+    const newItem = createPlanItem('New item')
+    onChange([...items, newItem])
+    setEnteringIds((current) => [...current, newItem.id])
     window.setTimeout(() => {
-      setEnteringIndexes((current) => current.filter((item) => item !== newIndex))
+      setEnteringIds((current) => current.filter((itemId) => itemId !== newItem.id))
     }, 220)
   }
 
-  const EmptyIcon = variant === 'feature' ? Sparkles : variant === 'card' ? ListChecks : ClipboardList
+  const EmptyIcon = variant === 'feature' ? Sparkles : ClipboardList
   const defaultEmptyTitle = variant === 'feature'
     ? 'No features yet — add one below'
-    : variant === 'card'
-      ? 'No user stories yet — add one below'
-      : 'No requirements yet — add one below'
+    : 'No requirements yet — add one below'
 
   const emptyState = items.length === 0 ? (
     <InlineEmptyState
@@ -169,24 +168,26 @@ export default function EditableList({
     />
   ) : null
 
+  const listItems = items.map((item, index) => (
+    <EditableListItem
+      key={item.id}
+      item={item}
+      index={index}
+      variant={variant}
+      isExiting={exitingIds.includes(item.id)}
+      isEntering={enteringIds.includes(item.id)}
+      onSave={(text) => updateItem(item.id, (current) => ({ ...current, text }))}
+      onDelete={() => deleteItem(item.id)}
+      onPriorityChange={(priority) => updateItem(item.id, (current) => ({ ...current, priority }))}
+      onReviewChange={(reviewed) => updateItem(item.id, (current) => ({ ...current, reviewed }))}
+    />
+  ))
+
   if (variant === 'bullet') {
     return (
       <div>
         {emptyState}
-        <ul className="space-y-3">
-          {items.map((item, index) => (
-            <EditableListItem
-              key={`${index}-${item}`}
-              value={item}
-              index={index}
-              variant={variant}
-              isExiting={exitingIndexes.includes(index)}
-              isEntering={enteringIndexes.includes(index)}
-              onSave={(v) => updateItem(index, v)}
-              onDelete={() => deleteItem(index)}
-            />
-          ))}
-        </ul>
+        <ul className="space-y-3">{listItems}</ul>
         <button type="button" onClick={addItem} className="focus-ring add-button mt-4">
           <Plus className="size-4" /> {addLabel}
         </button>
@@ -197,20 +198,7 @@ export default function EditableList({
   return (
     <div>
       {emptyState}
-      <div className={variant === 'feature' ? 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3' : 'grid gap-4 md:grid-cols-2'}>
-        {items.map((item, index) => (
-          <EditableListItem
-            key={`${index}-${item}`}
-            value={item}
-            index={index}
-            variant={variant}
-            isExiting={exitingIndexes.includes(index)}
-            isEntering={enteringIndexes.includes(index)}
-            onSave={(v) => updateItem(index, v)}
-            onDelete={() => deleteItem(index)}
-          />
-        ))}
-      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{listItems}</div>
       <button type="button" onClick={addItem} className="focus-ring add-button mt-4">
         <Plus className="size-4" /> {addLabel}
       </button>

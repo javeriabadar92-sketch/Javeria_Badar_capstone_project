@@ -48,11 +48,11 @@ export function exportPlanPdf(plan: ProjectPlan, title?: string) {
     doc.setTextColor(30, 41, 59)
   }
 
-  const bulletList = (items: string[]) => {
+  const bulletList = (items: { text: string }[]) => {
     for (const item of items) {
       y = checkPageBreak(doc, y, 12)
       doc.setFontSize(11)
-      const lines = doc.splitTextToSize(`• ${item}`, CONTENT_WIDTH - 6) as string[]
+      const lines = doc.splitTextToSize(`• ${item.text}`, CONTENT_WIDTH - 6) as string[]
       doc.text(lines, MARGIN + 4, y)
       y += lines.length * LINE_HEIGHT + 2
     }
