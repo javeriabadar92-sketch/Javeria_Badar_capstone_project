@@ -11,10 +11,7 @@ const navItems = [
   { to: '/roadmap', label: 'Roadmap' },
   { to: '/kanban', label: 'Kanban Board' },
   { to: '/notes', label: 'Notes' },
-  { to: '/health-check', label: 'Health Check' },
-  { to: '/playground', label: 'Playground' },
 ]
-
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
 

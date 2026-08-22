@@ -29,7 +29,7 @@ export default function Requirements() {
               <EditableList
                 items={plan.requirements[key]}
                 onChange={(items) => updateRequirements({ ...plan.requirements, [key]: items })}
-                addLabel="+ Add requirement"
+                addLabel=" Add requirement"
                 emptyTitle={`No ${key === 'functional' ? 'functional' : 'non-functional'} requirements yet — add one below`}
               />
             </div>

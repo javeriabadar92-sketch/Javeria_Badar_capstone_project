@@ -21,7 +21,7 @@ export default function Features() {
           items={plan.suggestedFeatures}
           onChange={updateSuggestedFeatures}
           variant="feature"
-          addLabel="+ Add feature"
+          addLabel="Add feature"
           emptyTitle="No features yet — add one below"
         />
       </div>

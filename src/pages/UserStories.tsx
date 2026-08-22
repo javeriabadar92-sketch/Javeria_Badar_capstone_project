@@ -22,7 +22,7 @@ export default function UserStories() {
           onChange={updateUserStories}
           onSuggestCriteria={suggestAcceptanceCriteria}
           generatingCriteriaForStoryId={generatingCriteriaForStoryId}
-          addLabel="+ Add story"
+          addLabel="Add story"
         />
       </div>
     </section>
