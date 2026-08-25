@@ -23,7 +23,7 @@ const PLAN_SYSTEM_PROMPT = `You are ProjectPilot AI's planning engine. Return ON
 
 const ACCEPTANCE_CRITERIA_SYSTEM_PROMPT = `You are ProjectPilot AI's acceptance criteria assistant. Return ONLY valid JSON with no markdown fences or extra keys. Use exactly this shape: {"acceptanceCriteria":["string"]}. Provide 3-4 specific, testable acceptance criteria bullet points for the user story provided.`;
 
-const MODEL_NAME = 'gemini-flash-latest';
+const MODEL_NAME = 'gemini-2.5-flash';
 const RATE_LIMIT_MESSAGE = "We've hit a temporary usage limit. Please wait a minute and try again.";
 
 function getErrorText(error: unknown): string {
