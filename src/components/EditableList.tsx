@@ -3,8 +3,8 @@ import { Check, ClipboardList, Plus, Sparkles, Trash2, X } from 'lucide-react'
 import type { PlanItem } from '../context/plan-items'
 import { createPlanItem } from '../context/plan-items'
 import InlineEmptyState from './InlineEmptyState'
-import PriorityTag from './PriorityTag'
 import ReviewToggle from './ReviewToggle'
+import Toast from './Toast'
 
 type EditableListProps = {
   items: PlanItem[]
@@ -19,7 +19,6 @@ function EditableListItem({
   item,
   onSave,
   onDelete,
-  onPriorityChange,
   onReviewChange,
   variant,
   index,
@@ -29,7 +28,6 @@ function EditableListItem({
   item: PlanItem
   onSave: (value: string) => void
   onDelete: () => void
-  onPriorityChange: (priority: PlanItem['priority']) => void
   onReviewChange: (reviewed: boolean) => void
   variant: 'bullet' | 'feature'
   index: number
@@ -92,12 +90,9 @@ function EditableListItem({
             <ReviewToggle reviewed={item.reviewed} onChange={onReviewChange} />
             <span className="text-xs font-semibold text-cyan-600">{String(index + 1).padStart(2, '0')}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <PriorityTag priority={item.priority} onChange={onPriorityChange} />
-            <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
-              <Trash2 className="size-3.5" />
-            </button>
-          </div>
+          <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
+            <Trash2 className="size-3.5" />
+          </button>
         </div>
         <button type="button" onClick={startEdit} className={`focus-ring mt-4 w-full text-left text-[15px] font-medium leading-7 hover:text-slate-900 ${item.reviewed ? 'text-slate-500 line-through decoration-emerald-300' : 'text-slate-700'}`}>
           {item.text}
@@ -115,7 +110,6 @@ function EditableListItem({
           {item.text}
         </button>
       </div>
-      <PriorityTag priority={item.priority} onChange={onPriorityChange} />
       <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring shrink-0 rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
         <Trash2 className="size-3.5" />
       </button>
@@ -133,6 +127,7 @@ export default function EditableList({
 }: EditableListProps) {
   const [exitingIds, setExitingIds] = useState<string[]>([])
   const [enteringIds, setEnteringIds] = useState<string[]>([])
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const updateItem = (id: string, updater: (item: PlanItem) => PlanItem) => {
     onChange(items.map((item) => (item.id === id ? updater(item) : item)))
@@ -155,10 +150,20 @@ export default function EditableList({
     }, 220)
   }
 
+  const handleReviewChange = (id: string, reviewed: boolean) => {
+    updateItem(id, (current) => ({ ...current, reviewed }))
+    if (reviewed) {
+      setToastMessage('Nice! Marked as done 🎉')
+    }
+  }
+
   const EmptyIcon = variant === 'feature' ? Sparkles : ClipboardList
   const defaultEmptyTitle = variant === 'feature'
     ? 'No features yet — add one below'
     : 'No requirements yet — add one below'
+
+  const activeItems = items.filter((item) => !item.reviewed)
+  const doneItems = items.filter((item) => item.reviewed)
 
   const emptyState = items.length === 0 ? (
     <InlineEmptyState
@@ -168,7 +173,7 @@ export default function EditableList({
     />
   ) : null
 
-  const listItems = items.map((item, index) => (
+  const renderItem = (item: PlanItem, index: number) => (
     <EditableListItem
       key={item.id}
       item={item}
@@ -178,30 +183,36 @@ export default function EditableList({
       isEntering={enteringIds.includes(item.id)}
       onSave={(text) => updateItem(item.id, (current) => ({ ...current, text }))}
       onDelete={() => deleteItem(item.id)}
-      onPriorityChange={(priority) => updateItem(item.id, (current) => ({ ...current, priority }))}
-      onReviewChange={(reviewed) => updateItem(item.id, (current) => ({ ...current, reviewed }))}
+      onReviewChange={(reviewed) => handleReviewChange(item.id, reviewed)}
     />
-  ))
+  )
 
-  if (variant === 'bullet') {
-    return (
-      <div>
-        {emptyState}
-        <ul className="space-y-3">{listItems}</ul>
-        <button type="button" onClick={addItem} className="focus-ring add-button mt-4">
-          <Plus className="size-4" /> {addLabel}
-        </button>
-      </div>
-    )
-  }
+  const activeList = activeItems.map((item, index) => renderItem(item, index))
+  const doneList = doneItems.map((item, index) => renderItem(item, index))
+
+  const wrapperClass = variant === 'bullet' ? 'space-y-3' : 'grid gap-4 sm:grid-cols-2 lg:grid-cols-3'
+  const Wrapper = variant === 'bullet' ? 'ul' : 'div'
 
   return (
     <div>
       {emptyState}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{listItems}</div>
+
+      {activeItems.length > 0 && <Wrapper className={wrapperClass}>{activeList}</Wrapper>}
+
       <button type="button" onClick={addItem} className="focus-ring add-button mt-4">
         <Plus className="size-4" /> {addLabel}
       </button>
+
+      {doneItems.length > 0 && (
+        <div className="mt-8">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Done ({doneItems.length})
+          </p>
+          <Wrapper className={wrapperClass}>{doneList}</Wrapper>
+        </div>
+      )}
+
+      {toastMessage && <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />}
     </div>
   )
 }

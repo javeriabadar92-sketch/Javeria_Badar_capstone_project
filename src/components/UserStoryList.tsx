@@ -3,8 +3,8 @@ import { Check, ChevronDown, ListChecks, LoaderCircle, Plus, Sparkles, Trash2, X
 import type { UserStoryItem } from '../context/plan-items'
 import { createUserStoryItem } from '../context/plan-items'
 import InlineEmptyState from './InlineEmptyState'
-import PriorityTag from './PriorityTag'
 import ReviewToggle from './ReviewToggle'
+import Toast from './Toast'
 
 type UserStoryListProps = {
   items: UserStoryItem[]
@@ -24,7 +24,6 @@ function UserStoryCard({
   onToggleExpand,
   onSave,
   onDelete,
-  onPriorityChange,
   onReviewChange,
   onSuggestCriteria,
 }: {
@@ -37,7 +36,6 @@ function UserStoryCard({
   onToggleExpand: () => void
   onSave: (text: string) => void
   onDelete: () => void
-  onPriorityChange: (priority: UserStoryItem['priority']) => void
   onReviewChange: (reviewed: boolean) => void
   onSuggestCriteria: () => void
 }) {
@@ -72,12 +70,9 @@ function UserStoryCard({
             Story {String(index + 1).padStart(2, '0')}
           </span>
         </div>
-        <div className="flex items-center gap-1">
-          <PriorityTag priority={item.priority} onChange={onPriorityChange} />
-          <button type="button" onClick={onDelete} aria-label="Delete story" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
-            <Trash2 className="size-3.5" />
-          </button>
-        </div>
+        <button type="button" onClick={onDelete} aria-label="Delete story" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
+          <Trash2 className="size-3.5" />
+        </button>
       </div>
 
       {editing ? (
@@ -169,6 +164,7 @@ export default function UserStoryList({
   const [exitingIds, setExitingIds] = useState<string[]>([])
   const [enteringIds, setEnteringIds] = useState<string[]>([])
   const [expandedIds, setExpandedIds] = useState<string[]>([])
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const updateItem = (id: string, updater: (item: UserStoryItem) => UserStoryItem) => {
     onChange(items.map((item) => (item.id === id ? updater(item) : item)))
@@ -198,6 +194,33 @@ export default function UserStoryList({
     )
   }
 
+  const handleReviewChange = (id: string, reviewed: boolean) => {
+    updateItem(id, (current) => ({ ...current, reviewed }))
+    if (reviewed) {
+      setToastMessage('Nice! Marked as done 🎉')
+    }
+  }
+
+  const activeItems = items.filter((item) => !item.reviewed)
+  const doneItems = items.filter((item) => item.reviewed)
+
+  const renderCard = (item: UserStoryItem, index: number) => (
+    <UserStoryCard
+      key={item.id}
+      item={item}
+      index={index}
+      isExiting={exitingIds.includes(item.id)}
+      isEntering={enteringIds.includes(item.id)}
+      isExpanded={expandedIds.includes(item.id)}
+      isGeneratingCriteria={generatingCriteriaForStoryId === item.id}
+      onToggleExpand={() => toggleExpanded(item.id)}
+      onSave={(text) => updateItem(item.id, (current) => ({ ...current, text }))}
+      onDelete={() => deleteItem(item.id)}
+      onReviewChange={(reviewed) => handleReviewChange(item.id, reviewed)}
+      onSuggestCriteria={() => onSuggestCriteria(item.id, item.text)}
+    />
+  )
+
   return (
     <div>
       {items.length === 0 ? (
@@ -208,28 +231,26 @@ export default function UserStoryList({
         />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {items.map((item, index) => (
-            <UserStoryCard
-              key={item.id}
-              item={item}
-              index={index}
-              isExiting={exitingIds.includes(item.id)}
-              isEntering={enteringIds.includes(item.id)}
-              isExpanded={expandedIds.includes(item.id)}
-              isGeneratingCriteria={generatingCriteriaForStoryId === item.id}
-              onToggleExpand={() => toggleExpanded(item.id)}
-              onSave={(text) => updateItem(item.id, (current) => ({ ...current, text }))}
-              onDelete={() => deleteItem(item.id)}
-              onPriorityChange={(priority) => updateItem(item.id, (current) => ({ ...current, priority }))}
-              onReviewChange={(reviewed) => updateItem(item.id, (current) => ({ ...current, reviewed }))}
-              onSuggestCriteria={() => onSuggestCriteria(item.id, item.text)}
-            />
-          ))}
+          {activeItems.map((item, index) => renderCard(item, index))}
         </div>
       )}
+
       <button type="button" onClick={addItem} className="focus-ring add-button mt-4">
         <Plus className="size-4" /> {addLabel}
       </button>
+
+      {doneItems.length > 0 && (
+        <div className="mt-8">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Done ({doneItems.length})
+          </p>
+          <div className="grid gap-4 md:grid-cols-2">
+            {doneItems.map((item, index) => renderCard(item, index))}
+          </div>
+        </div>
+      )}
+
+      {toastMessage && <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />}
     </div>
   )
 }
