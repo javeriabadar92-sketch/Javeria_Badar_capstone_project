@@ -43,7 +43,7 @@ export default function Overview() {
               value={projectIdea}
               onChange={(event) => setProjectIdea(event.target.value)}
               placeholder="Describe your project idea..."
-              rows={5}
+              rows={3}
               disabled={isGenerating}
               required
               className="focus-ring w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-800 placeholder:text-slate-500"

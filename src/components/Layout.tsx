@@ -24,7 +24,7 @@ export default function Layout() {
         <aside className="border-b border-slate-200 bg-white px-4 py-4 shadow-sm lg:sticky lg:top-0 lg:min-h-screen lg:w-72 lg:border-b-0 lg:border-r lg:px-6 lg:py-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-600">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-cyan-600">
                 PROJECTPILOT AI
               </p>
               <h1 className="mt-1 text-lg font-semibold tracking-tight text-slate-900">
