@@ -43,32 +43,31 @@ export default function Layout() {
 
           <nav className={`${menuOpen ? 'mt-4 grid grid-rows-[1fr] opacity-100' : 'grid grid-rows-[0fr] opacity-0'} overflow-hidden transition-[grid-template-rows,opacity] duration-300 lg:mt-8 lg:grid lg:grid-rows-[1fr] lg:opacity-100`}>
             <div className="flex min-h-0 flex-col gap-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.to === '/'}
-                onClick={() => setMenuOpen(false)}
-                className={({ isActive }) =>
-                  `focus-ring relative flex items-center rounded-xl border-l-2 px-3 py-2 text-sm font-medium transition-colors duration-200 ${
-                    isActive
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/'}
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `focus-ring relative flex items-center rounded-xl border-l-2 px-3 py-2 text-sm font-medium transition-colors duration-200 ${isActive
                       ? 'nav-active'
                       : 'border-transparent text-slate-600 hover:border-cyan-300 hover:bg-slate-50 hover:text-slate-900'
-                  }`
-                }
-              >
-                {item.to === '/' && <Bot className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/requirements' && <ClipboardList className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/user-stories' && <ListChecks className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/features' && <CheckCircle2 className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/roadmap' && <Map className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/kanban' && <KanbanSquare className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/notes' && <NotebookPen className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/health-check' && <CheckCircle2 className="mr-2 size-4" aria-hidden="true" />}
-                {item.to === '/playground' && <MessageSquare className="mr-2 size-4" aria-hidden="true" />}
-                {item.label}
-              </NavLink>
-            ))}
+                    }`
+                  }
+                >
+                  {item.to === '/' && <Bot className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/requirements' && <ClipboardList className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/user-stories' && <ListChecks className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/features' && <CheckCircle2 className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/roadmap' && <Map className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/kanban' && <KanbanSquare className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/notes' && <NotebookPen className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/health-check' && <CheckCircle2 className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/playground' && <MessageSquare className="mr-2 size-4" aria-hidden="true" />}
+                  {item.label}
+                </NavLink>
+              ))}
             </div>
           </nav>
 
@@ -77,10 +76,10 @@ export default function Layout() {
 
         <div className="flex min-w-0 flex-1 flex-col">
           {activeProjectTitle && (
-            <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3 sm:px-6 lg:px-8">
-              <FolderOpen className="size-4 text-cyan-600" aria-hidden="true" />
-              <p className="text-sm text-slate-600">
-                Working on <span className="font-semibold text-slate-900">{activeProjectTitle}</span>
+            <div className="flex items-center justify-center gap-2 border-b border-slate-200 bg-white px-4 py-4 sm:px-6 lg:px-8">
+              <FolderOpen className="size-6 text-cyan-600" aria-hidden="true" />
+              <p className="text-lg font-bold text-slate-900 sm:text-xl">
+                Working on {activeProjectTitle}
               </p>
             </div>
           )}
