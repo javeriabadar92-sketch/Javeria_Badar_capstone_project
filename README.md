@@ -40,10 +40,12 @@ Visit `http://localhost:5173`.
 - **`src/playground/`** — Hand-built accessible components (Modal, Tabs, Disclosure) built from scratch against W3C ARIA patterns, as a learning exercise before using AI-generated components elsewhere
 - **`api/chat.ts`** — Vercel Edge Function that streams responses from Google Gemini using the AI SDK
 - **`server.js`** — Express server mirroring the same `/api/chat` logic, used for local development since Vite doesn't run serverless functions natively
+- **Review & progress tracking** — Requirements, User Stories, and Features items can be marked as reviewed; reviewed items move to a "Done" section within the same page (not a separate route), with a brief celebratory toast confirmation
+- **Per-project notes** — Notes are scoped to each saved project individually and support multiple saved entries with timestamps, rather than a single overwritable note
 
 ## AI Integration Explained
 
-The app uses **Google's Gemini API** (`gemini-flash-latest`) via the Vercel AI SDK's `streamText` function, streamed to the client with the `useChat` hook.
+The app uses **Google's Gemini API** (`gemini-3.5-flash-lite`) via the Vercel AI SDK's `streamText` function, streamed to the client with the `useChat` hook. Three distinct system prompts are used depending on context (general chat, structured plan generation, acceptance criteria generation), selected via a `mode` field sent with each request.
 
 **Two AI-powered flows:**
 1. **Plan generation** — When a user submits a project idea, a structured system prompt instructs Gemini to return strict JSON matching a defined shape (overview, requirements, user stories, features, roadmap, kanban tasks). The response is parsed and normalized into the app's data model.
