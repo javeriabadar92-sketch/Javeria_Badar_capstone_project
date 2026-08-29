@@ -34,7 +34,7 @@ export default function KanbanBoard() {
         eyebrow="Execute"
         icon={KanbanSquare}
         title={<>Kanban Task <span className="text-cyan-600">Board</span></>}
-        subtitle="Move tasks through the delivery flow as your project takes shape."
+        subtitle="Track implementation tasks step-by-step — separate from your requirements and stories, this board is about how you'll actually build it."
       />
 
       <div className="surface-card mt-6 p-5">

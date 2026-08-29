@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { Bot, CheckCircle2, ClipboardList, KanbanSquare, ListChecks, Map, Menu, MessageSquare, NotebookPen, X } from 'lucide-react'
+import { Bot, CheckCircle2, ClipboardList, FolderOpen, KanbanSquare, ListChecks, Map, Menu, MessageSquare, NotebookPen, X } from 'lucide-react'
 import ProjectSwitcher from './ProjectSwitcher'
+import { usePlan } from '../context/usePlan'
 
 const navItems = [
   { to: '/', label: 'Overview' },
@@ -12,8 +13,10 @@ const navItems = [
   { to: '/kanban', label: 'Kanban Board' },
   { to: '/notes', label: 'Notes' },
 ]
+
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { activeProjectTitle } = usePlan()
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -72,9 +75,19 @@ export default function Layout() {
           <ProjectSwitcher />
         </aside>
 
-        <main className="min-w-0 flex-1 bg-slate-50 p-4 sm:p-6 lg:p-8">
-          <Outlet />
-        </main>
+        <div className="flex min-w-0 flex-1 flex-col">
+          {activeProjectTitle && (
+            <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3 sm:px-6 lg:px-8">
+              <FolderOpen className="size-4 text-cyan-600" aria-hidden="true" />
+              <p className="text-sm text-slate-600">
+                Working on <span className="font-semibold text-slate-900">{activeProjectTitle}</span>
+              </p>
+            </div>
+          )}
+          <main className="min-w-0 flex-1 bg-slate-50 p-4 sm:p-6 lg:p-8">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   )
