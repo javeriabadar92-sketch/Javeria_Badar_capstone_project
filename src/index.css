@@ -98,7 +98,7 @@ body {
     @apply inline-flex items-center gap-2 rounded-lg border border-dashed border-cyan-800 px-3 py-2 text-sm text-slate-600 transition-colors duration-200 hover:border-cyan-800 hover:bg-cyan-50/50 hover:text-cyan-800;
   }
 
-  .eyebrow {
+  eyebrow {
     @apply text-xs font-semibold uppercase tracking-[0.3em] text-cyan-800;
   }
 
