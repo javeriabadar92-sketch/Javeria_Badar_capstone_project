@@ -60,7 +60,7 @@ export default function ProjectSwitcher() {
                 <div
                   className={`group flex items-center rounded-xl border transition-colors ${
                     project.id === activeProjectId
-                      ? 'border-cyan-300 bg-[#ECFEFF]'
+                      ? 'border-cyan-800 bg-[#ECFEFF]'
                       : 'border-transparent hover:border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -69,7 +69,7 @@ export default function ProjectSwitcher() {
                     onClick={() => switchProject(project.id)}
                     className="focus-ring flex min-w-0 flex-1 items-center gap-2 px-3 py-2.5 text-left text-sm"
                   >
-                    <FolderOpen className={`size-4 shrink-0 ${project.id === activeProjectId ? 'text-cyan-600' : 'text-slate-400'}`} />
+                    <FolderOpen className={`size-4 shrink-0 ${project.id === activeProjectId ? 'text-cyan-800' : 'text-slate-400'}`} />
                     <span className={`truncate ${project.id === activeProjectId ? 'font-semibold text-cyan-800' : 'text-slate-700'}`}>
                       {project.title}
                     </span>

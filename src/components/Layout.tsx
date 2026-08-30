@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { Bot, CheckCircle2, ClipboardList, FolderOpen, KanbanSquare, ListChecks, Map, Menu, MessageSquare, NotebookPen, X } from 'lucide-react'
+import { CheckCircle2, ClipboardList, FolderOpen, KanbanSquare, LayoutDashboard, ListChecks, Map, Menu, MessageSquare, NotebookPen, X } from 'lucide-react'
 import ProjectSwitcher from './ProjectSwitcher'
 import { usePlan } from '../context/usePlan'
 
@@ -24,7 +24,7 @@ export default function Layout() {
         <aside className="border-b border-slate-200 bg-white px-4 py-4 shadow-sm lg:sticky lg:top-0 lg:min-h-screen lg:w-72 lg:border-b-0 lg:border-r lg:px-6 lg:py-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.15em] text-cyan-600">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-cyan-800">
                 PROJECTPILOT AI
               </p>
               <h1 className="mt-1 text-lg font-semibold tracking-tight text-slate-900">
@@ -52,11 +52,11 @@ export default function Layout() {
                   className={({ isActive }) =>
                     `focus-ring relative flex items-center rounded-xl border-l-2 px-3 py-2 text-sm font-medium transition-colors duration-200 ${isActive
                       ? 'nav-active'
-                      : 'border-transparent text-slate-600 hover:border-cyan-300 hover:bg-slate-50 hover:text-slate-900'
+                      : 'border-transparent text-slate-600 hover:border-cyan-800 hover:bg-slate-50 hover:text-slate-900'
                     }`
                   }
                 >
-                  {item.to === '/' && <Bot className="mr-2 size-4" aria-hidden="true" />}
+                  {item.to === '/' && <LayoutDashboard className="mr-2 size-4" aria-hidden="true" />}
                   {item.to === '/requirements' && <ClipboardList className="mr-2 size-4" aria-hidden="true" />}
                   {item.to === '/user-stories' && <ListChecks className="mr-2 size-4" aria-hidden="true" />}
                   {item.to === '/features' && <CheckCircle2 className="mr-2 size-4" aria-hidden="true" />}
@@ -77,7 +77,7 @@ export default function Layout() {
         <div className="flex min-w-0 flex-1 flex-col">
           {activeProjectTitle && (
             <div className="flex items-center justify-center gap-2 border-b border-slate-200 bg-white px-4 py-4 sm:px-6 lg:px-8">
-              <FolderOpen className="size-6 text-cyan-600" aria-hidden="true" />
+              <FolderOpen className="size-6 text-cyan-800" aria-hidden="true" />
               <p className="text-lg font-bold text-slate-900 sm:text-xl">
                 Working on {activeProjectTitle}
               </p>

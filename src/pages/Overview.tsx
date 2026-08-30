@@ -37,7 +37,7 @@ export default function Overview() {
             <PageHeader
               eyebrow="Workspace"
               icon={LayoutDashboard}
-              title={<>Turn one idea into a buildable <span className="text-cyan-600">plan</span></>}
+              title={<>Turn one idea into a buildable <span className="text-cyan-800">plan</span></>}
               subtitle="Describe your software project and ProjectPilot AI will shape it into requirements, stories, features, a roadmap, and an actionable task board."
             />
 
@@ -91,13 +91,13 @@ export default function Overview() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="eyebrow">Generated plan</p>
-              <h2 className="page-title">A clear starting <span className="text-cyan-600">point</span></h2>
+              <h2 className="page-title">A clear starting <span className="text-cyan-800">point</span></h2>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => setShowNewPlanForm(true)}
-                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-medium text-cyan-700 transition-colors hover:bg-cyan-100"
+                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-cyan-800 bg-cyan-50 px-4 py-2 text-sm font-medium text-cyan-800 transition-colors hover:bg-cyan-800"
               >
                 <Sparkles className="size-4" aria-hidden="true" />
                 Generate New Plan
@@ -106,7 +106,7 @@ export default function Overview() {
                 type="button"
                 onClick={handleExportPdf}
                 disabled={isGenerating}
-                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-cyan-300 hover:bg-cyan-50/50 hover:text-cyan-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-cyan-800 hover:bg-cyan-50/50 hover:text-cyan-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <FileDown className="size-4" aria-hidden="true" />
                 Export as PDF
@@ -115,7 +115,7 @@ export default function Overview() {
                 type="button"
                 onClick={() => setShowRegenerateConfirm(true)}
                 disabled={isGenerating}
-                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-cyan-300 hover:bg-cyan-50/50 hover:text-cyan-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-cyan-800 hover:bg-cyan-50/50 hover:text-cyan-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <RefreshCw className="size-4" aria-hidden="true" />
                 Regenerate Plan
@@ -135,7 +135,7 @@ export default function Overview() {
             ].map(([label, count, detail]) => (
               <div key={label} className="surface-card p-4">
                 <p className="text-sm text-slate-700">{label}</p>
-                <p className="mt-2 text-2xl font-semibold text-cyan-600">{count}</p>
+                <p className="mt-2 text-2xl font-semibold text-cyan-800">{count}</p>
                 <p className="text-xs text-slate-500">{detail}</p>
               </div>
             ))}

@@ -21,13 +21,13 @@ export default function PlaygroundPage() {
         <PageHeader
           eyebrow="Component lab"
           icon={MessageSquare}
-          title={<>AI Development <span className="text-cyan-600">Hub</span></>}
+          title={<>AI Development <span className="text-cyan-800">Hub</span></>}
           subtitle="Interact with AI components and explore machine learning workflows"
         />
 
         {/* Modal Section */}
         <section className="surface-card p-5 sm:p-8">
-          <h2 className="text-xl font-semibold text-cyan-700 sm:text-2xl">
+          <h2 className="text-xl font-semibold text-cyan-800 sm:text-2xl">
             Model Configuration
           </h2>
           <p className="page-subtitle mb-6">
@@ -57,7 +57,7 @@ export default function PlaygroundPage() {
 
         {/* Tabs Section */}
         <section className="surface-card p-5 sm:p-8">
-          <h2 className="text-xl font-semibold text-cyan-700 sm:text-2xl">
+          <h2 className="text-xl font-semibold text-cyan-800 sm:text-2xl">
             Development Workflow
           </h2>
           <p className="page-subtitle mb-6">
@@ -68,7 +68,7 @@ export default function PlaygroundPage() {
 
         {/* Disclosure Section */}
         <section className="surface-card p-5 sm:p-8">
-          <h2 className="text-xl font-semibold text-cyan-700 sm:text-2xl">
+          <h2 className="text-xl font-semibold text-cyan-800 sm:text-2xl">
             AI Fundamentals
           </h2>
           <p className="page-subtitle mb-6">

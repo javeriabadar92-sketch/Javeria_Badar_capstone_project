@@ -98,7 +98,7 @@ export default function Chat() {
                 behavior: 'smooth',
               });
             }}
-            className="focus-ring fixed bottom-24 right-4 rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-cyan-600 sm:right-8"
+            className="focus-ring fixed bottom-24 right-4 rounded-full bg-cyan-800 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-800/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-cyan-800 sm:right-8"
           >
             ↓ Jump to latest
           </button>

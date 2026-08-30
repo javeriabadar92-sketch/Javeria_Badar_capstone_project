@@ -88,7 +88,7 @@ function EditableListItem({
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
             <ReviewToggle reviewed={item.reviewed} onChange={onReviewChange} />
-            <span className="text-xs font-semibold text-cyan-600">{String(index + 1).padStart(2, '0')}</span>
+            <span className="text-xs font-semibold text-cyan-800">{String(index + 1).padStart(2, '0')}</span>
           </div>
           <button type="button" onClick={onDelete} aria-label="Delete item" className="focus-ring rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600">
             <Trash2 className="size-3.5" />
@@ -104,7 +104,7 @@ function EditableListItem({
   return (
     <li className={`group flex items-start gap-2 ${motionClass} ${reviewedClass}`}>
       <ReviewToggle reviewed={item.reviewed} onChange={onReviewChange} />
-      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-cyan-500" aria-hidden="true" />
+      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-cyan-800" aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <button type="button" onClick={startEdit} className={`focus-ring w-full text-left text-sm leading-6 hover:text-slate-900 ${item.reviewed ? 'text-slate-500 line-through decoration-emerald-300' : 'text-slate-700'}`}>
           {item.text}

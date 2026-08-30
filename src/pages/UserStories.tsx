@@ -13,7 +13,7 @@ export default function UserStories() {
       <PageHeader
         eyebrow="Discovery"
         icon={ListChecks}
-        title={<>User <span className="text-cyan-600">Stories</span></>}
+        title={<>User <span className="text-cyan-800">Stories</span></>}
         subtitle="User-centered outcomes to keep implementation grounded in real needs. Click any story to edit, expand for acceptance criteria."
       />
       <div className="mt-8">

@@ -19,7 +19,7 @@ export default function Toast({ message, onDismiss }: ToastProps) {
       className="fixed top-6 left-1/2 z-50 -translate-x-1/2 animate-in fade-in slide-in-from-top-4 duration-300"
     >
       <div className="flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg">
-        <PartyPopper className="size-4 text-cyan-400" aria-hidden="true" />
+        <PartyPopper className="size-4 text-cyan-800" aria-hidden="true" />
         {message}
       </div>
     </div>

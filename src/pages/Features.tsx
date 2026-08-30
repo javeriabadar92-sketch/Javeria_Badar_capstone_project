@@ -13,7 +13,7 @@ export default function Features() {
       <PageHeader
         eyebrow="Shape"
         icon={CheckCircle2}
-        title={<>Suggested <span className="text-cyan-600">Features</span></>}
+        title={<>Suggested <span className="text-cyan-800">Features</span></>}
         subtitle="Potential product capabilities to evaluate and prioritize. Click any feature to edit."
       />
       <div className="mt-8">

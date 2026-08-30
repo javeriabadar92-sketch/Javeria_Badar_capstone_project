@@ -56,7 +56,7 @@ export function Tabs({ tabs }: TabsProps) {
             onKeyDown={handleKeyDown}
             className={`focus-ring border-b-2 px-5 py-3 text-sm font-medium transition-all duration-200 ease-out ${
               activeIndex === index
-                ? 'border-cyan-500 bg-[#ECFEFF] text-cyan-700'
+                ? 'border-cyan-800 bg-[#ECFEFF] text-cyan-800'
                 : 'border-transparent text-slate-600 hover:bg-white hover:text-slate-900'
             }`}
           >

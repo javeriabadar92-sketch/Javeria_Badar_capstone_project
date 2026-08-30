@@ -33,7 +33,7 @@ export default function KanbanBoard() {
       <PageHeader
         eyebrow="Execute"
         icon={KanbanSquare}
-        title={<>Kanban Task <span className="text-cyan-600">Board</span></>}
+        title={<>Kanban Task <span className="text-cyan-800">Board</span></>}
         subtitle="Track implementation tasks step-by-step — separate from your requirements and stories, this board is about how you'll actually build it."
       />
 
@@ -43,11 +43,11 @@ export default function KanbanBoard() {
             <p className="text-sm font-medium text-slate-700">Overall progress</p>
             <p className="mt-1 text-xs text-slate-500">{doneTasks} of {totalTasks} tasks completed</p>
           </div>
-          <span className="text-2xl font-semibold text-cyan-600">{progressPercent}%</span>
+          <span className="text-2xl font-semibold text-cyan-800">{progressPercent}%</span>
         </div>
         <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-slate-200">
           <div
-            className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+            className="h-full rounded-full bg-cyan-800 transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
             role="progressbar"
             aria-valuenow={progressPercent}
@@ -64,8 +64,8 @@ export default function KanbanBoard() {
           return (
             <div key={column.status} className="surface-card min-w-0 p-4">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="font-semibold text-cyan-600">{column.title}</h2>
-                <span className="rounded-full border border-cyan-200 bg-[#ECFEFF] px-2 py-1 text-xs text-cyan-700">{columnTasks.length}</span>
+                <h2 className="font-semibold text-cyan-800">{column.title}</h2>
+                <span className="rounded-full border border-cyan-800 bg-[#ECFEFF] px-2 py-1 text-xs text-cyan-800">{columnTasks.length}</span>
               </div>
               <div className="mt-4 space-y-3">
                 {columnTasks.map((task) => {
@@ -74,8 +74,8 @@ export default function KanbanBoard() {
                     <article key={task.title} className="surface-card p-4">
                       <p className="text-sm leading-6 text-slate-700">{task.title}</p>
                       <div className="mt-4 flex justify-end gap-2">
-                        {taskIndex > 0 && <button type="button" onClick={() => moveTask(task.title, -1)} aria-label={`Move ${task.title} left`} className="focus-ring rounded-lg border border-slate-200 bg-white p-2 text-slate-600 hover:border-cyan-300 hover:bg-cyan-50/50 hover:text-cyan-700"><ArrowLeft className="size-4" aria-hidden="true" /></button>}
-                        {taskIndex < columns.length - 1 && <button type="button" onClick={() => moveTask(task.title, 1)} aria-label={`Move ${task.title} right`} className="focus-ring rounded-lg border border-slate-200 bg-white p-2 text-slate-600 hover:border-cyan-300 hover:bg-cyan-50/50 hover:text-cyan-700"><ArrowRight className="size-4" aria-hidden="true" /></button>}
+                        {taskIndex > 0 && <button type="button" onClick={() => moveTask(task.title, -1)} aria-label={`Move ${task.title} left`} className="focus-ring rounded-lg border border-slate-200 bg-white p-2 text-slate-600 hover:border-cyan-800 hover:bg-cyan-50/50 hover:text-cyan-800"><ArrowLeft className="size-4" aria-hidden="true" /></button>}
+                        {taskIndex < columns.length - 1 && <button type="button" onClick={() => moveTask(task.title, 1)} aria-label={`Move ${task.title} right`} className="focus-ring rounded-lg border border-slate-200 bg-white p-2 text-slate-600 hover:border-cyan-800 hover:bg-cyan-50/50 hover:text-cyan-800"><ArrowRight className="size-4" aria-hidden="true" /></button>}
                       </div>
                     </article>
                   )

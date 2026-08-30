@@ -25,7 +25,7 @@
   --popover-foreground: #1E293B;
   --primary: #0F172A;
   --primary-foreground: #FFFFFF;
-  --secondary: #06B6D4;
+  --secondary: #0891B2;
   --secondary-foreground: #FFFFFF;
   --muted: #F1F5F9;
   --muted-foreground: #64748B;
@@ -34,7 +34,7 @@
   --destructive: #DC2626;
   --border: #E2E8F0;
   --input: #E2E8F0;
-  --ring: #06B6D4;
+  --ring: #0891B2;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -73,7 +73,7 @@ body {
   }
 
   .nav-active {
-    @apply border-cyan-500 bg-[#ECFEFF] text-cyan-700 shadow-sm;
+    @apply border-cyan-800 bg-[#ECFEFF] text-cyan-800 shadow-sm;
   }
 
   .list-item-motion {
@@ -95,11 +95,11 @@ body {
   }
 
   .add-button {
-    @apply inline-flex items-center gap-2 rounded-lg border border-dashed border-cyan-300 px-3 py-2 text-sm text-slate-600 transition-colors duration-200 hover:border-cyan-500 hover:bg-cyan-50/50 hover:text-cyan-700;
+    @apply inline-flex items-center gap-2 rounded-lg border border-dashed border-cyan-800 px-3 py-2 text-sm text-slate-600 transition-colors duration-200 hover:border-cyan-800 hover:bg-cyan-50/50 hover:text-cyan-800;
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.3em] text-cyan-600;
+    @apply text-xs font-semibold uppercase tracking-[0.3em] text-cyan-800;
   }
 
   .page-title {
@@ -111,7 +111,7 @@ body {
   }
 
   .focus-ring {
-    @apply outline-none focus-visible:border-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+    @apply outline-none focus-visible:border-cyan-800 focus-visible:ring-2 focus-visible:ring-cyan-800/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
   }
 }
 

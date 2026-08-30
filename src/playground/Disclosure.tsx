@@ -17,7 +17,7 @@ export function Disclosure({ title, children }: DisclosureProps) {
         className="focus-ring flex w-full items-center gap-3 px-5 py-4 text-left font-semibold text-slate-800 transition-colors hover:bg-slate-50"
       >
         <span
-          className={`flex-shrink-0 text-cyan-600 transition-transform duration-300 ${
+          className={`flex-shrink-0 text-cyan-800 transition-transform duration-300 ${
             isExpanded ? 'rotate-90' : 'rotate-0'
           }`}
         >

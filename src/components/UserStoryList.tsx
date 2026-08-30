@@ -66,7 +66,7 @@ function UserStoryCard({
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
           <ReviewToggle reviewed={item.reviewed} onChange={onReviewChange} />
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-600">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-800">
             Story {String(index + 1).padStart(2, '0')}
           </span>
         </div>
@@ -111,10 +111,10 @@ function UserStoryCard({
         type="button"
         onClick={onToggleExpand}
         aria-expanded={isExpanded}
-        className="focus-ring mt-4 flex w-full items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:border-cyan-300 hover:bg-cyan-50/40"
+        className="focus-ring mt-4 flex w-full items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:border-cyan-800 hover:bg-cyan-50/40"
       >
         <span>{isExpanded ? 'Hide details' : 'Show details & acceptance criteria'}</span>
-        <ChevronDown className={`size-4 text-cyan-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`size-4 text-cyan-800 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
       </button>
 
       {isExpanded && (
@@ -123,7 +123,7 @@ function UserStoryCard({
             <ul className="space-y-2">
               {item.acceptanceCriteria.map((criterion) => (
                 <li key={criterion} className="flex gap-2 text-sm leading-6 text-slate-700">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-cyan-500" aria-hidden="true" />
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-cyan-800" aria-hidden="true" />
                   {criterion}
                 </li>
               ))}
@@ -134,7 +134,7 @@ function UserStoryCard({
             type="button"
             onClick={onSuggestCriteria}
             disabled={isGeneratingCriteria}
-            className="focus-ring inline-flex items-center gap-2 rounded-lg border border-cyan-300 bg-white px-3 py-2 text-sm font-medium text-cyan-700 transition-colors hover:bg-cyan-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="focus-ring inline-flex items-center gap-2 rounded-lg border border-cyan-800 bg-white px-3 py-2 text-sm font-medium text-cyan-800 transition-colors hover:bg-cyan-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isGeneratingCriteria ? (
               <>

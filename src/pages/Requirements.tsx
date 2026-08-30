@@ -24,7 +24,7 @@ export default function Requirements() {
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
         {groups.map(([title, key]) => (
           <div key={title} className="surface-card p-5 sm:p-6">
-            <h2 className="text-lg font-semibold text-cyan-600">{title}</h2>
+            <h2 className="text-lg font-semibold text-cyan-800">{title}</h2>
             <div className="mt-4">
               <EditableList
                 items={plan.requirements[key]}

@@ -57,7 +57,7 @@ export default function Notes() {
       <PageHeader
         eyebrow="Capture"
         icon={NotebookPen}
-        title={<>Project <span className="text-cyan-600">Notes</span></>}
+        title={<>Project <span className="text-cyan-800">Notes</span></>}
         subtitle={`Keep research, decisions, and useful context for ${activeProjectTitle ?? 'this project'}.`}
       />
 
