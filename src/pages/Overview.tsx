@@ -97,7 +97,7 @@ export default function Overview() {
               <button
                 type="button"
                 onClick={() => setShowNewPlanForm(true)}
-                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-cyan-800 bg-cyan-50 px-4 py-2 text-sm font-medium text-cyan-800 transition-colors hover:bg-cyan-800"
+                className="focus-ring inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-cyan-800 hover:bg-cyan-50/50 hover:text-cyan-800 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Sparkles className="size-4" aria-hidden="true" />
                 Generate New Plan
