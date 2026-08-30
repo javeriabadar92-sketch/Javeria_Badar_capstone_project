@@ -22,7 +22,7 @@ export default function Requirements() {
         subtitle="The capabilities and quality bar this project needs to meet. Click any item to edit."
       />
       <div className="mt-8 grid gap-5 lg:grid-cols-2">
-        {groups.map(([title, key]) => (
+        {groups.map(([title, key]) => ( 
           <div key={title} className="surface-card p-5 sm:p-6">
             <h2 className="text-lg font-semibold text-cyan-800">{title}</h2>
             <div className="mt-4">
